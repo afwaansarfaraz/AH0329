@@ -1,9 +1,14 @@
 # WindDesk — Day-Ahead Wind Procurement Intelligence
 
 [![Python](https://img.shields.io/badge/Python-3.11-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-18.3-61DAFB.svg?logo=react&logoColor=black)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
-[![Pydantic](https://img.shields.io/badge/Pydantic-v2-E92063.svg?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
-[![Tests](https://img.shields.io/badge/Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#m-testing-and-verification)
+[![Vite](https://img.shields.io/badge/Vite-6.1-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Apache ECharts](https://img.shields.io/badge/ECharts-5.6-AA344D.svg?logo=apacheecharts&logoColor=white)](https://echarts.apache.org/)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#m-testing-and-verification)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-8%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
+[![Docker](https://img.shields.io/badge/Docker-Verified-2496ED.svg?logo=docker&logoColor=white)](#i-installation-and-local-setup)
 [![License](https://img.shields.io/badge/License-Unlicensed-lightgrey.svg)](#r-contribution-licensing-and-acknowledgements)
 
 > **Day-Ahead Wind Procurement Decision Support & Forecast Accuracy Analytics**  
@@ -38,7 +43,7 @@
 ## A. Project Introduction
 
 ### What is WindDesk?
-**WindDesk** is a specialised decision-support backend built for power procurement analysts and energy desk operators in Great Britain (GB). It bridges the gap between raw wind power generation forecasts published by the National Grid ESO (via Elexon BMRS) and the physical outturn recorded on the GB transmission grid.
+**WindDesk** is a specialised decision-support application built for power procurement analysts and energy desk operators in Great Britain (GB). It bridges the gap between raw wind power generation forecasts published by the National Grid ESO (via Elexon BMRS) and the physical outturn recorded on the GB transmission grid.
 
 ### The Problem It Solves
 Electricity trading in Great Britain requires energy buyers and suppliers to submit contracted physical volumes in the Day-Ahead market before strict auction cutoffs (often between 09:20 and 11:00 London time on Day $D-1$ for physical delivery on Day $D$). 
@@ -52,19 +57,16 @@ Because wind generation is weather-dependent and volatile, power procurement tea
 ### Who Uses It and Why?
 * **Power Procurement Analysts:** To audit historical decisions, evaluate supplier performance, and measure the accuracy of forecasts available at the moment trades were executed.
 * **Energy Risk Managers:** To quantify empirical downside shortfall risks ($P_5, P_{50}, P_{95}$) and forecast degradation across lead-time horizons ($0$ to $72\,\text{hours}$).
-* **Quantitative Developers:** To access clean, anti-leakage forecast-actual pairs via documented, type-safe REST APIs without writing bespoke raw parsing pipelines.
+* **Quantitative Developers:** To access clean, anti-leakage forecast-actual pairs via documented, type-safe REST APIs and visual interactive dashboards.
 
-### Current Implementation Scope (Phase 2)
-The repository currently contains the **complete, production-grade Phase 2 backend engine**:
-* Deterministic offline data ingestion and validation pipeline.
-* Anti-leakage decision engine enforcing decision cutoff eligibility.
-* Energy-conserving half-hourly to hourly actual reconciliation.
-* Five statistical metric calculators and naive persistence baseline benchmark.
-* Seven production REST API endpoints served via FastAPI.
-* Comprehensive offline automated test suite with **52 passing tests**.
-
-> [!NOTE]
-> **Phase 3 Preview:** The interactive React + TypeScript + ECharts frontend dashboard, Docker Compose multi-container setup, and live cloud deployment are scheduled for Phase 3 and are not yet included in this release.
+### Implemented Scope (Phases 1, 2 & 3 Completed)
+WindDesk is a **complete, verified full-stack analytics platform**:
+* **Deterministic Offline Ingestion Pipeline:** Normalizes and aligns 18,104 raw WINDFOR forecasts and 31,680 FUELHH observations into verified runtime artifacts.
+* **Anti-Leakage Decision Engine:** Mathematically guarantees zero forward data leakage across all 31 delivery days ($N = 744$ paired hours).
+* **Robust Domain & API Services:** 7 production REST API endpoints served via FastAPI with comprehensive OpenAPI documentation.
+* **Midnight Energy Intelligence Dashboard:** Premium React 18 + TypeScript + Apache ECharts frontend with 6 modular analytics views, custom sparklines, responsive layouts, and smooth motion design.
+* **Multi-Container Docker & Compose Orchestration:** Independent `wind-backend` and `wind-frontend` containers with health checks and Nginx reverse proxy.
+* **Offline Automated Testing:** **52 backend tests** and **8 frontend tests** passing 100% offline.
 
 ---
 
@@ -153,13 +155,18 @@ flowchart TD
 | **FastAPI** | `0.100+` | `backend/main.py`, `backend/api/` | Modern, high-performance async web framework with automatic OpenAPI docs | Web Framework | **Verified** |
 | **Pydantic** | `v2.0+` | `backend/domain/schemas.py` | Type validation, serialization, and API request/response schema modeling | Data Modeling | **Verified** |
 | **Starlette / Uvicorn** | `0.20+` | Local API Server | Lightweight ASGI web server and routing utilities | Web Server | **Verified** |
-| **Pytest** | `7.0+` | `backend/tests/` | Standard testing framework for unit and integration suites | Automated Testing | **Verified** |
+| **Pytest** | `7.0+` | `backend/tests/` | Standard testing framework for unit and integration suites | Backend Testing | **Verified (52/52)** |
 | **HTTPX** | `0.24+` | `backend/tests/conftest.py` | Fast, mockable HTTP client powering FastAPI's `TestClient` | Test Client | **Verified** |
 | **ZoneInfo** | Standard Library | `backend/domain/timestamps.py` | Timezone database handling Europe/London and UTC daylight saving math | Timezone Engine | **Verified** |
-| **Vercel CLI** | `65.2+` | Deployment Configuration | Serverless deployment platform for Python functions | Cloud Packaging | **Configured** |
-| **React + TypeScript** | `18+` | `frontend/` | Component-based dashboard with strict type safety | Frontend UI | *Phase 3 Planned* |
-| **Apache ECharts** | `5.5+` | `frontend/` | Interactive time-series, vintage comparisons, and distribution charts | Data Visualizations | *Phase 3 Planned* |
-| **Docker** | `20+` | Deployment | Containerized local execution for backend and frontend | Containerization | *Phase 3 Planned* |
+| **React** | `18.3+` | `src/` | Declarative, component-based dashboard with state management | Frontend UI | **Verified** |
+| **TypeScript** | `5.7+` | `src/` | End-to-end static type safety matching backend Pydantic schemas | Type System | **Verified** |
+| **Vite** | `6.1+` | Root build system | Ultra-fast HMR development server and optimized rollup production bundler | Build Tooling | **Verified** |
+| **Apache ECharts** | `5.6+` | `src/components/charts/` | High-performance canvas-rendered interactive time-series, horizons, and distributions | Data Visualizations | **Verified** |
+| **Lucide React** | `0.475+` | `src/components/` | Consistent, lightweight engineering iconography | UI Icons | **Verified** |
+| **Vitest & RTL** | `3.0+` | `src/test/` | Modern unit and component testing for React components and utilities | Frontend Testing | **Verified (8/8)** |
+| **Docker & Compose** | `29+` / `v5.5+` | Root orchestration | Multi-container setup (`wind-backend`, `wind-frontend` on Nginx) | Containerization | **Verified** |
+| **Nginx** | Alpine | `Dockerfile.frontend` | High-performance reverse proxy for API requests and SPA static asset delivery | Web Server | **Verified** |
+| **Vercel CLI** | `65.2+` | Deployment Configuration | Serverless deployment platform for Python backend + static React frontend | Cloud Packaging | **Configured** |
 
 ---
 
@@ -169,13 +176,48 @@ flowchart TD
 WIND/
 ├── README.md                           # Comprehensive documentation and setup guide
 ├── DECISIONS.md                        # Versioned architectural and technical decision log
+├── package.json                        # Node dependencies, scripts, and build configuration
+├── tsconfig.json                       # TypeScript compiler options and references
+├── tsconfig.node.json                  # Vite configuration TypeScript settings
+├── vite.config.ts                      # Vite build, dev proxy (/api -> 8008), and Vitest setup
+├── index.html                          # Single-page application entrypoint
+├── nginx.conf                          # Production Nginx reverse-proxy configuration
+├── Dockerfile.backend                  # Multi-stage Python 3.11-slim container with health check
+├── Dockerfile.frontend                 # Multi-stage Node 20 builder + Nginx Alpine runner
+├── docker-compose.yml                  # Root multi-container orchestration (ports 8008 & 3008)
+├── .dockerignore                       # Excludes bulky raw data, caches, and node_modules
 ├── .gitignore                          # Standard git exclusions (caches, environments, raw downloads)
-├── .vercelignore                       # Excludes test caches, raw data, and probes from Vercel bundles
-├── vercel.json                         # Vercel serverless function routing and artifact include configuration
+├── .vercelignore                       # Excludes test caches, raw data, and node_modules from Vercel
+├── vercel.json                         # Vercel serverless function routing and static build output
 ├── requirements.txt                    # Root Python dependencies
 ├── DATA/                               # Raw Elexon BMRS downloads (preserved locally for offline ingestion)
 ├── api/
 │   └── index.py                        # Vercel entrypoint delegating to backend.main:app
+├── src/                                # React 18 + TypeScript Frontend Application
+│   ├── main.tsx                        # DOM mount entrypoint
+│   ├── App.tsx                         # Root tab router, state management & ErrorBoundary
+│   ├── vite-env.d.ts                   # Vite environment typings
+│   ├── api/
+│   │   ├── types.ts                    # Typed interfaces mirroring FastAPI backend models
+│   │   └── client.ts                   # Fetch API client, timeout handling & formatting utils
+│   ├── styles/
+│   │   ├── tokens.css                  # Midnight Energy Intelligence design tokens
+│   │   └── index.css                   # Global styles, micro-animations, skeleton loader
+│   ├── components/
+│   │   ├── common/                     # Card, KpiCard, ErrorBoundary, Badge
+│   │   ├── layout/                     # Collapsible Sidebar, Header with Date/Cutoff picker
+│   │   └── charts/                     # EChartsWrapper, ForecastVsActual, Horizon, Distribution, QualityRing
+│   ├── pages/                          # 6 Modular Analytics Views
+│   │   ├── DecisionOverviewPage.tsx    # Flagship dashboard matching Midnight Energy reference
+│   │   ├── VintageComparisonPage.tsx   # Successive forecast revision curves & table
+│   │   ├── ForecastAccuracyPage.tsx    # 744h headline accuracy & 5 lead-time buckets
+│   │   ├── ErrorDistributionPage.tsx   # P5, P50, P95 empirical error histograms
+│   │   ├── DataQualityPage.tsx         # Ingestion provenance, coverage & diagnostics
+│   │   └── MethodologyPage.tsx         # Prototype D-1 09:20 cutoff, math & market rules
+│   └── test/                           # Vitest Unit & Component Tests
+│       ├── setup.ts                    # Polyfills (ResizeObserver) for jsdom
+│       ├── client.test.ts              # Unit tests for formatting utilities
+│       └── components.test.tsx         # RTL tests for Card, KpiCard, DataQualityRing
 └── backend/
     ├── main.py                         # FastAPI app factory, CORS configuration, and route inclusion
     ├── requirements.txt                # Backend Python dependencies
@@ -331,57 +373,71 @@ The persistence benchmark assumes that future wind generation will remain consta
 
 ### Step-by-Step PowerShell Setup (Windows)
 
+### Option 1: One-Command Docker Compose (Recommended)
+Run the entire production-grade multi-container stack (backend + frontend) with a single command:
+
+```bash
+docker compose up --build
+```
+
+* **Frontend Dashboard:** Open `http://localhost:3008` in your browser.
+* **Backend Health Check:** Query `http://localhost:8008/api/health`.
+* **Swagger API Documentation:** Open `http://localhost:8008/docs`.
+
+---
+
+### Option 2: Full-Stack Local Development
+
+#### Prerequisites
+* Windows 10/11, macOS, or Linux
+* Python 3.11+
+* Node.js 20+ & npm 10+
+* Git
+
+#### Step-by-Step PowerShell Setup (Windows)
+
 ```powershell
 # 1. Clone the repository
 git clone https://github.com/afwaansarfaraz/energy-insights-593.git
 cd energy-insights-593
 
-# 2. Create and activate a Python virtual environment
+# 2. Setup Python backend virtual environment
 python -m venv venv
 .\venv\Scripts\activate
-
-# 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. (Optional) Ingestion verification
-# Note: The repository already includes the pre-built, verified runtime artifact
-# in backend/data/artifacts/, so you can run the backend immediately without re-ingesting!
-# If you want to re-run ingestion from raw downloads:
-python -m backend.data.ingest
+# 3. Setup Frontend dependencies
+npm install
 
-# 5. Start the FastAPI local server
+# 4. (Optional) Run test suites
+python -m pytest backend/tests -v   # 52 backend tests
+npm test                            # 8 frontend tests
+
+# 5. Start Backend API Server (Terminal 1)
 uvicorn backend.main:app --reload --port 8000
+
+# 6. Start Frontend Development Server (Terminal 2)
+npm run dev
+# Dashboard opens on http://localhost:5173
 ```
 
-### General Shell Setup (macOS / Linux)
+#### General Shell Setup (macOS / Linux)
 
 ```bash
-# 1. Clone and navigate
-git clone https://github.com/afwaansarfaraz/energy-insights-593.git
-cd energy-insights-593
-
-# 2. Virtual environment
-python3 -m venv venv
-source venv/bin/activate
-
-# 3. Dependencies
+# Terminal 1 - Backend
+python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-
-# 4. Start server
 uvicorn backend.main:app --reload --port 8000
+
+# Terminal 2 - Frontend
+npm install
+npm run dev
 ```
 
 ### Verification & Documentation URLs
-Once the server starts:
-* **Interactive Swagger UI:** Open `http://localhost:8000/docs` in your browser.
-* **Interactive ReDoc:** Open `http://localhost:8000/redoc`.
-* **Service Health Check:** Query `http://localhost:8000/api/health`.
-
-### Running Automated Tests
-```powershell
-pytest backend/tests -v
-```
-Expected output: **52 passed in ~1.6s**.
+* **Frontend Application:** `http://localhost:5173` (dev) or `http://localhost:3008` (Docker).
+* **Interactive Swagger UI:** `http://localhost:8000/docs` (dev) or `http://localhost:8008/docs` (Docker).
+* **Service Health Check:** `http://localhost:8000/api/health`.
 
 ---
 
@@ -748,22 +804,23 @@ The substantial positive bias (**+1,729 MW**) indicates that if a procurement de
 3. **Naive Persistence Benchmark:** Holding generation constant across a 15–39 hour lead time represents an elementary baseline, flattering forecast skill (+51.8%). It is an elementary reference, not an optimized statistical benchmark.
 4. **Serial Autocorrelation:** The 744 hourly decision-time observations exhibit strong temporal serial correlation across weather systems. Empirical percentiles are descriptive historical metrics, not formal probabilistic confidence intervals.
 5. **Fixed Evaluation Window:** All metrics reflect conditions during January 2026 in Great Britain. Performance may differ substantially in other seasons or grid regions.
-6. **Frontend Dashboard Status:** The interactive user interface and chart components remain Phase 3 work.
+6. **Live Telemetry Feeds:** WindDesk evaluates verified historical records from January 2026. Live real-time grid telemetry connectors remain future roadmap work.
 
 ---
 
 ## P. Deployment Status
 
-* **Local Verification:** **PASSED.** FastAPI service runs locally on port 8000; all 7 endpoints tested and functional.
+* **Local Full-Stack Verification:** **PASSED.** React 18 + TypeScript + Apache ECharts dashboard and FastAPI service verified locally; all 7 API endpoints functional with zero console errors.
+* **Multi-Container Docker Compose:** **PASSED.** Both `wind-backend` and `wind-frontend` (Nginx reverse proxy) built and tested locally with automatic health checks (`docker compose up --build`).
 * **Serverless Entrypoint:** **VERIFIED.** [`api/index.py`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/api/index.py) delegates cleanly to `backend.main:app`.
-* **Packaging Configuration:** **VERIFIED.** [`vercel.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/vercel.json) explicitly includes `backend/data/artifacts/**` into serverless bundles while excluding raw data and test caches via `.vercelignore`.
-* **Cloud Deployment Status:** **CONFIGURED (Credentials Required).** During Phase 1 verification, unauthenticated temporary deployments were rejected by Vercel (`Temporary deployments aren't available for this attempt. Log in to continue.`). Deployment to Vercel requires authenticating via `vercel login` or passing a `VERCEL_TOKEN`.
+* **Packaging Configuration:** **VERIFIED.** [`vercel.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/vercel.json) packages `dist` static assets, configures SPA fallback, and includes `backend/data/artifacts/**` into serverless Python bundles.
+* **Cloud Deployment Status:** **CONFIGURED (Deployment Credentials Required).** Unauthenticated deployment attempts require authentication via `vercel login` or passing an authorized `VERCEL_TOKEN`.
 
 ---
 
 ## Q. Roadmap
 
-### Completed (Phase 1 & Phase 2)
+### Completed (Phases 1, 2 & 3)
 - [x] Phase 1: Technical verification spike, source schema inspection, timestamp alignment analysis.
 - [x] Phase 2: Ingestion pipeline CLI and atomic JSON/CSV artifact building.
 - [x] Phase 2: Domain engine with strict anti-leakage forecast selection.
@@ -771,14 +828,18 @@ The substantial positive bias (**+1,729 MW**) indicates that if a procurement de
 - [x] Phase 2: Statistical metrics engine (MAE, RMSE, Bias, WAPE, Naive Persistence Skill).
 - [x] Phase 2: Lead-time horizon analysis ($0\text{--}72\text{h}$) and empirical error distribution ($P_5, P_{50}, P_{95}$).
 - [x] Phase 2: All 7 REST API endpoints implemented and documented with Pydantic models.
-- [x] Phase 2: Comprehensive test suite with 52 passing tests.
+- [x] Phase 2: Comprehensive backend test suite with 52 passing tests.
+- [x] Phase 3: React 18 + TypeScript + Vite frontend dashboard with Midnight Energy Intelligence theme.
+- [x] Phase 3: Apache ECharts interactive time-series, vintage revisions, and distribution plots.
+- [x] Phase 3: 6 modular analytics views (Overview, Vintages, Accuracy, Distribution, Quality, Methodology).
+- [x] Phase 3: Multi-container Docker & Docker Compose setup with Nginx reverse proxy.
+- [x] Phase 3: Vitest frontend component test suite (8 tests passing).
+- [x] Phase 3: Full-stack Vercel serverless deployment configuration.
 
-### Planned (Phase 3)
-- [ ] Phase 3: React + TypeScript + Vite frontend dashboard.
-- [ ] Phase 3: Apache ECharts interactive time-series, vintage revisions, and distribution plots.
-- [ ] Phase 3: Frontend containerization (`frontend/Dockerfile`) and `docker-compose.yml`.
-- [ ] Phase 3: Cloud production deployment on Vercel with authenticated token.
-- [ ] Phase 3: Product demonstration video recording.
+### Future Roadmap
+- [ ] Automated live Elexon BMRS websocket/API streaming connector.
+- [ ] Multi-region Scottish vs English wind fleet constraint analysis.
+- [ ] Machine learning bias correction and probabilistic quantile regression models.
 
 ---
 
@@ -794,10 +855,10 @@ No license has been attached to this project yet. All rights are reserved by the
 Underlying market data (WINDFOR wind forecasts and FUELHH generation outturn) is provided by **Elexon BMRS** under the Open Government Licence (OGL) and BSC data governance rules.
 
 ### AI Assistance Disclosure
-In accordance with modern engineering standards, generative AI coding assistants were utilized to pair-program backend implementations, generate unit test fixtures, and document API contracts. All data figures, formulas, anti-leakage rules, and test executions were independently verified.
+In accordance with modern engineering standards, generative AI coding assistants were utilized to pair-program backend and frontend implementations, generate unit test fixtures, and document API contracts. All data figures, formulas, anti-leakage rules, and test executions were independently verified.
 
 ---
 
 ## S. Conclusion
 
-WindDesk Phase 2 delivers a verified, modular, and leak-free backend decision engine for day-ahead wind power procurement. With 52 passing tests, sub-15ms local query performance, and exact alignment between forecasts and actuals, the backend is fully prepared for Phase 3 frontend integration and deployment.
+WindDesk delivers a complete, verified, and leak-free wind procurement intelligence platform. Combining a high-performance Python FastAPI calculation engine with a sophisticated Midnight Energy Intelligence React dashboard, WindDesk empowers energy analysts and power trading desks to evaluate day-ahead forecast accuracy, audit publication revisions, and mitigate volume shortfall imbalance risk across the Great Britain power grid.

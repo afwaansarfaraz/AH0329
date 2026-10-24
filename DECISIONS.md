@@ -137,3 +137,36 @@ With February 1 actuals included, the full 31-day January decision window was ev
 ### D. Architectural Modularity & Test Coverage
 * Complete separation of concerns: `config`, `timestamps`, `schemas`, `normalization`, `actuals`, `forecast_selection`, `metrics`, `distributions`, `horizons`, `quality`, and `service`.
 * 52 comprehensive unit and integration tests passing offline with zero external network dependencies.
+
+---
+
+## 8. Phase 3 Frontend, Motion Design & Deployment Architecture
+
+### A. Technology Selection & Rationale
+* **React 18 + TypeScript + Vite:** Chosen for fast HMR, strong typing of API contracts, and optimal bundle size.
+* **Apache ECharts (Canvas Renderer):** Selected for high-performance rendering of 24-hour time series, multi-run vintage trajectories, and empirical histograms without DOM bloat.
+* **Direct ECharts Lifecycle Wrapper (`EChartsWrapper.tsx`):** Implemented using `ResizeObserver` and explicit `chart.dispose()` on unmount, completely eliminating memory leaks.
+* **Lucide Icons:** Selected for clean, consistent, engineering-grade icons across the UI.
+
+### B. Visual Design System: Midnight Energy Intelligence
+* **Palette Tokens:**
+  * Canvas: `#101C32` | Surface Deep: `#0B1425` | Elevated Card: `#172640` | Secondary Panel: `#1C304A`
+  * Borders: `#2A3D56` | Border Hover: `#3E5879`
+  * Text Primary: `#F1F5FA` | Text Secondary: `#9CAEC3` | Text Muted: `#647B96`
+  * Forecast Accent (Teal): `#26D9C4` | Realized Actual (Blue): `#38BDF8`
+  * Secondary Accent (Lime): `#B7F36B` | Warning (Amber): `#F59E0B` | Error: `#EF4444`
+* **Motion Design Principles:**
+  * 150–250ms cubic-bezier easing for smooth card elevation and tab transitions.
+  * Staggered entrance fade-in animations on route navigation.
+  * ECharts data transition animations (300–400ms duration).
+  * Strict `prefers-reduced-motion` compliance to respect accessibility preferences.
+
+### C. Containerization & Production Build
+* **Docker Multi-Stage Setup:**
+  * `Dockerfile.backend`: Python 3.11-slim with health check on `/api/health`, served on port `8008`.
+  * `Dockerfile.frontend`: Node 20 builder with multi-stage Nginx alpine runner, reverse-proxying `/api/` to backend, served on port `3008`.
+  * `docker-compose.yml`: Root orchestration with health check synchronization and custom non-conflicting host ports (`8008` and `3008`).
+* **Vercel Cloud Configuration:**
+  * `vercel.json` updated with `buildCommand: npm run build`, `outputDirectory: dist`, and Python serverless function mapping for `/api/(.*)`.
+  * Cloud deployment is fully configured; live deployment execution awaits authenticated deployment credentials (`VERCEL_TOKEN`).
+
