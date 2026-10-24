@@ -1,0 +1,36 @@
+# Python & virtual environments
+.env
+.env.*
+!.env.example
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Node & frontend build artifacts (Phase 3)
+node_modules/
+dist/
+.vite/
+coverage/
+
+# Operating system & editor files
+*.log
+tmp/
+temp/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Internal blueprint planning doc & temporary Phase 1 spike probe
+WIND_MASTER_BLUEPRINT.md
+probe.py
+
+# Raw data downloads (the application runs from compact artifacts in backend/data/artifacts/)
+/DATA/
+
