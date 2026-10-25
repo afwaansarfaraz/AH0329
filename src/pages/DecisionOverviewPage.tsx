@@ -16,7 +16,7 @@ import { ForecastVsActualChart } from '../components/charts/ForecastVsActualChar
 import { HorizonAccuracyChart } from '../components/charts/HorizonAccuracyChart';
 import { ErrorDistributionChart } from '../components/charts/ErrorDistributionChart';
 import { DataQualityRing } from '../components/charts/DataQualityRing';
-import { api, formatMW, formatSignedMW, formatPercent } from '../api/client';
+import { api, formatMW, formatSignedMW, formatWape, formatSkill } from '../api/client';
 import {
   DecisionResponse,
   AccuracySummaryResponse,
@@ -105,7 +105,7 @@ export function DecisionOverviewPage({
 
   // Compute local daily metrics or fallback to summary
   const summary = decision?.summary;
-  const isOverforecasting = (summary?.bias ?? 0) > 0;
+  const isOverforecasting = (summary?.bias ?? overallAccuracy?.bias ?? 0) > 0;
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
@@ -187,65 +187,60 @@ export function DecisionOverviewPage({
       >
         <KpiCard
           title="Forecast MAE"
-          value={formatMW(summary?.mae ?? overallAccuracy?.mae)}
+          value={formatMW(summary?.mae ?? overallAccuracy?.mae, 'Not available')}
           icon={<TrendingUp size={18} />}
           iconColor="var(--color-accent-primary)"
           iconBg="var(--color-accent-primary-dim)"
           trendText="Mean Absolute Error"
           trendDirection="down"
-          sparklineData={[2400, 2200, 2100, 2038, 1950, 2039]}
           tooltip="Average magnitude of forecast error per hour in MW."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
           title="Forecast RMSE"
-          value={formatMW(summary?.rmse ?? overallAccuracy?.rmse)}
+          value={formatMW(summary?.rmse ?? overallAccuracy?.rmse, 'Not available')}
           icon={<BarChart2 size={18} />}
           iconColor="var(--color-accent-primary)"
           iconBg="var(--color-accent-primary-dim)"
           trendText="Root Mean Squared Error"
           trendDirection="down"
-          sparklineData={[3100, 2900, 2800, 2600, 2525]}
           tooltip="Penalises large volatility forecast swings heavily."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
           title="Forecast Bias"
-          value={formatSignedMW(summary?.bias ?? overallAccuracy?.bias)}
+          value={formatSignedMW(summary?.bias ?? overallAccuracy?.bias, 'Not available')}
           icon={<Scale size={18} />}
           iconColor="var(--color-warning)"
           iconBg="var(--color-warning-dim)"
           badgeText={isOverforecasting ? 'Overforecasting' : 'Underforecasting'}
           badgeVariant={isOverforecasting ? 'amber' : 'blue'}
-          sparklineData={[1200, 1400, 1600, 1729, 1700]}
           tooltip="Forecast minus Actual. Positive values mean model over-estimated wind generation."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
           title="WAPE"
-          value={formatPercent(summary?.wape ?? overallAccuracy?.wape)}
+          value={formatWape(summary?.wape ?? overallAccuracy?.wape, 'Not available')}
           icon={<Percent size={18} />}
           iconColor="var(--color-actual)"
           iconBg="var(--color-actual-dim)"
           trendText="Weighted % Error"
           trendDirection="down"
-          sparklineData={[22, 20, 19, 18, 17.65]}
           tooltip="Total absolute error divided by total actual generation."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
           title="Persistence Skill"
-          value={formatPercent(overallAccuracy?.persistenceSkill)}
+          value={formatSkill(overallAccuracy?.persistenceSkill, 'Not available')}
           icon={<Crosshair size={18} />}
           iconColor="var(--color-accent-secondary)"
           iconBg="var(--color-accent-secondary-dim)"
           badgeText="vs Naive Baseline"
           badgeVariant="lime"
-          sparklineData={[0.3, 0.4, 0.45, 0.48, 0.518]}
           tooltip="Relative skill score improvement over flat 1-hour lag persistence baseline."
           isLoading={isLoadingAnalytics}
         />
@@ -340,7 +335,7 @@ export function DecisionOverviewPage({
               <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                 <span style={{ color: 'var(--color-warning)', fontWeight: 700 }}>↗</span>
                 <span style={{ color: 'var(--color-text-secondary)' }}>
-                  Forecasts show a persistent <strong style={{ color: 'var(--color-text-primary)' }}>overforecasting bias</strong> (+1,729 MW monthly average), increasing shortfall cashout exposure.
+                  Forecasts show a persistent <strong style={{ color: 'var(--color-text-primary)' }}>{isOverforecasting ? 'overforecasting bias' : 'underforecasting bias'}</strong> ({formatSignedMW(overallAccuracy?.bias, '—')} monthly average), increasing physical imbalance cashout exposure.
                 </span>
               </div>
 
@@ -354,7 +349,7 @@ export function DecisionOverviewPage({
               <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
                 <span style={{ color: 'var(--color-accent-secondary)', fontWeight: 700 }}>↑</span>
                 <span style={{ color: 'var(--color-text-secondary)' }}>
-                  Model demonstrates <strong style={{ color: 'var(--color-text-primary)' }}>+51.8% positive skill</strong> over the naive flat persistence benchmark.
+                  Model demonstrates <strong style={{ color: 'var(--color-text-primary)' }}>{formatSkill(overallAccuracy?.persistenceSkill, 'positive')} skill</strong> over the naive flat persistence benchmark.
                 </span>
               </div>
 

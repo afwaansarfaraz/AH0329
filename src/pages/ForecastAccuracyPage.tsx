@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { BarChart3, TrendingUp, HelpCircle } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { HorizonAccuracyChart } from '../components/charts/HorizonAccuracyChart';
-import { api, formatMW, formatSignedMW, formatPercent } from '../api/client';
+import { api, formatMW, formatSignedMW, formatWape, formatSkill } from '../api/client';
 import { AccuracySummaryResponse, HorizonResponse } from '../api/types';
 
 export function ForecastAccuracyPage() {
@@ -32,6 +32,12 @@ export function ForecastAccuracyPage() {
     };
   }, []);
 
+  const sampleCountStr = accuracy?.sampleCount
+    ? `${accuracy.sampleCount.toLocaleString()} paired hourly intervals`
+    : '744 paired hourly intervals';
+
+  const isOverforecast = (accuracy?.bias ?? 0) > 0;
+
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
       {/* Page Header */}
@@ -46,7 +52,7 @@ export function ForecastAccuracyPage() {
           Forecast Accuracy & Lead-Time Horizons
         </h2>
         <p style={{ color: 'var(--color-text-secondary)', fontSize: '13px', marginTop: '4px' }}>
-          Verified evaluation over 744 paired hourly intervals (Jan 2 – Feb 1, 2026) under the D-1 09:20 London procurement cutoff.
+          Verified evaluation over {sampleCountStr} (Jan 2 – Feb 1, 2026) under the D-1 09:20 London procurement cutoff.
         </p>
       </div>
 
@@ -60,7 +66,7 @@ export function ForecastAccuracyPage() {
       >
         <Card title="Mean Absolute Error (MAE)">
           <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--color-text-primary)' }}>
-            {formatMW(accuracy?.mae)}
+            {formatMW(accuracy?.mae, 'Not available')}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
             Linear average of |forecast − actual|
@@ -69,7 +75,7 @@ export function ForecastAccuracyPage() {
 
         <Card title="Root Mean Squared Error (RMSE)">
           <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--color-accent-primary)' }}>
-            {formatMW(accuracy?.rmse)}
+            {formatMW(accuracy?.rmse, 'Not available')}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
             Penalises large tail misses heavily
@@ -78,16 +84,16 @@ export function ForecastAccuracyPage() {
 
         <Card title="Mean Error / Bias">
           <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--color-warning)' }}>
-            {formatSignedMW(accuracy?.bias)}
+            {formatSignedMW(accuracy?.bias, 'Not available')}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--color-warning)', marginTop: '4px' }}>
-            ● Persistent Overforecasting
+            ● {isOverforecast ? 'Persistent Overforecasting' : 'Systematic Underforecasting'}
           </div>
         </Card>
 
         <Card title="Weighted Abs % Error (WAPE)">
           <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--color-actual)' }}>
-            {formatPercent(accuracy?.wape)}
+            {formatWape(accuracy?.wape, 'Not available')}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
             Volume-weighted across all MWh
@@ -96,10 +102,10 @@ export function ForecastAccuracyPage() {
 
         <Card title="Naive Persistence Skill">
           <div style={{ fontSize: '26px', fontWeight: 700, color: 'var(--color-accent-secondary)' }}>
-            {formatPercent(accuracy?.persistenceSkill)}
+            {formatSkill(accuracy?.persistenceSkill, 'Not available')}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginTop: '4px' }}>
-            Baseline MAE: {formatMW(accuracy?.naivePersistenceMae)}
+            Baseline MAE: {formatMW(accuracy?.naivePersistenceMae, '—')}
           </div>
         </Card>
       </div>
@@ -162,7 +168,7 @@ export function ForecastAccuracyPage() {
                     {formatSignedMW(b.bias)}
                   </td>
                   <td style={{ padding: '12px 14px', textAlign: 'right', fontWeight: 600 }}>
-                    {formatPercent(b.wape)}
+                    {formatWape(b.wape)}
                   </td>
                 </tr>
               ))}
@@ -190,7 +196,7 @@ export function ForecastAccuracyPage() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <TrendingUp size={16} style={{ color: 'var(--color-warning)' }} />
             <h4 style={{ fontSize: '14px', color: 'var(--color-text-primary)' }}>
-              Procurement Impact of Positive Bias (+1,729 MW)
+              Procurement Impact of Forecast Bias ({formatSignedMW(accuracy?.bias, '—')})
             </h4>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.55 }}>
@@ -213,7 +219,7 @@ export function ForecastAccuracyPage() {
             </h4>
           </div>
           <p style={{ fontSize: '12px', color: 'var(--color-text-secondary)', lineHeight: 1.55 }}>
-            The naive persistence benchmark holds the last observed generation prior to the decision cutoff constant across the delivery day. While the +51.8% skill score confirms WINDFOR outperforms a flat baseline, flat persistence is an elementary reference, not a commercial forecasting model.
+            The naive persistence benchmark holds the last observed generation prior to the decision cutoff constant across the delivery day. While the {formatSkill(accuracy?.persistenceSkill, 'positive')} skill score confirms WINDFOR outperforms a flat baseline, flat persistence is an elementary reference, not a commercial forecasting model.
           </p>
         </div>
       </div>

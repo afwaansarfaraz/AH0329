@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.1-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/ECharts-5.6-AA344D.svg?logo=apacheecharts&logoColor=white)](https://echarts.apache.org/)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#m-testing-and-verification)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-8%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-12%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
 [![Docker](https://img.shields.io/badge/Docker-Verified-2496ED.svg?logo=docker&logoColor=white)](#i-installation-and-local-setup)
 [![License](https://img.shields.io/badge/License-Unlicensed-lightgrey.svg)](#r-contribution-licensing-and-acknowledgements)
 
@@ -64,9 +64,9 @@ WindDesk is a **complete, verified full-stack analytics platform**:
 * **Deterministic Offline Ingestion Pipeline:** Normalizes and aligns 18,104 raw WINDFOR forecasts and 31,680 FUELHH observations into verified runtime artifacts.
 * **Anti-Leakage Decision Engine:** Mathematically guarantees zero forward data leakage across all 31 delivery days ($N = 744$ paired hours).
 * **Robust Domain & API Services:** 7 production REST API endpoints served via FastAPI with comprehensive OpenAPI documentation.
-* **Midnight Energy Intelligence Dashboard:** Premium React 18 + TypeScript + Apache ECharts frontend with 6 modular analytics views, custom sparklines, responsive layouts, and smooth motion design.
+* **Midnight Energy Intelligence Dashboard:** Premium React 18 + TypeScript + Apache ECharts frontend with 6 modular analytics views, responsive layouts, data integrity guarantees (zero fake sparklines or synthetic data), and smooth motion design.
 * **Multi-Container Docker & Compose Orchestration:** Independent `wind-backend` and `wind-frontend` containers with health checks and Nginx reverse proxy.
-* **Offline Automated Testing:** **52 backend tests** and **8 frontend tests** passing 100% offline.
+* **Offline Automated Testing:** **52 backend tests** and **12 frontend tests** passing 100% offline.
 
 ---
 
@@ -772,6 +772,23 @@ backend/tests/test_timestamps.py::test_lead_hours_and_extractors PASSED
 
 ============================= 52 passed in 1.58s =============================
 ```
+
+### Frontend Tests (Vitest)
+```powershell
+npm test
+```
+
+```text
+ RUN  v3.2.7 C:/Users/afwaa/OneDrive/Desktop/WIND
+
+ ✓ src/test/client.test.ts (8 tests)
+ ✓ src/test/components.test.tsx (4 tests)
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Duration  4.26s
+```
+
 
 ---
 

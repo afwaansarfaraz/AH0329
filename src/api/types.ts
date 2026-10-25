@@ -75,10 +75,8 @@ export interface VintageRecord {
 
 export interface AccuracySummaryResponse {
   evaluationWindow: {
-    startUtc: string;
-    endUtc: string;
-    deliveryDays: number;
-    cutoffPolicy?: string;
+    startDate?: string;
+    endDate?: string;
     [key: string]: unknown;
   };
   cutoffPolicy: string;
@@ -90,9 +88,9 @@ export interface AccuracySummaryResponse {
   naivePersistenceMae: number | null;
   persistenceSkill: number | null;
   coverage: {
-    totalExpectedHours?: number;
-    missingHoursCount?: number;
-    missingHoursList?: string[];
+    evaluatedDeliveryDays?: number;
+    pairedHours?: number;
+    missingActualHours?: number;
     [key: string]: unknown;
   };
 }
@@ -125,8 +123,8 @@ export interface DistributionResponse {
   max: number | null;
   mean: number | null;
   evaluationWindow: {
-    startUtc: string;
-    endUtc: string;
+    startDate?: string;
+    endDate?: string;
     [key: string]: unknown;
   };
   cutoffPolicy: string;
@@ -134,37 +132,34 @@ export interface DistributionResponse {
 
 export interface QualityResponse {
   sourceCoverage: {
-    windforStartDate?: string;
-    windforEndDate?: string;
-    windforRecordCount?: number;
-    fuelhhStartDate?: string;
-    fuelhhEndDate?: string;
-    fuelhhRecordCount?: number;
-    fuelhhWindRecords?: number;
+    forecastRecordsRaw?: number;
+    actualRecordsRaw?: number;
+    forecastStartMin?: string | null;
+    forecastStartMax?: string | null;
+    actualStartMin?: string | null;
+    actualStartMax?: string | null;
     [key: string]: unknown;
   };
   retentionCoverage: {
+    retentionPolicy?: string;
     retainedForecastCount?: number;
-    retainedHourlyActualCount?: number;
-    retainedDeliveryIntervals?: number;
+    retainedActualHours?: number;
+    hindcastRecordsExcluded?: number;
     [key: string]: unknown;
   };
   missingIntervals: {
-    missingHourlyActualCount?: number;
-    missingHourlyActuals?: string[];
-    missingSettlementPeriodCount?: number;
+    missingActualHoursCount?: number;
+    incompleteActualHoursCount?: number;
+    missingActualHours?: string[];
     [key: string]: unknown;
   };
   duplicateRecords: {
-    duplicateForecastKeys?: number;
-    duplicateActualKeys?: number;
+    actualDuplicatesEncountered?: number;
+    forecastDuplicatesEncountered?: number;
     [key: string]: unknown;
   };
-  invalidRecords: {
-    invalidForecastsCount?: number;
-    invalidActualsCount?: number;
-    [key: string]: unknown;
-  };
+  invalidRecords: Record<string, unknown>;
   evaluationSampleCount: number;
   warnings: string[];
 }
+

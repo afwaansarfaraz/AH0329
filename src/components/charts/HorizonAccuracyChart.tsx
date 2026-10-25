@@ -15,10 +15,25 @@ export function HorizonAccuracyChart({
   const [metric, setMetric] = useState<'mae' | 'rmse' | 'wape'>('mae');
 
   const option = useMemo<EChartsOption>(() => {
+    if (!buckets || buckets.length === 0) {
+      return {
+        backgroundColor: 'transparent',
+        title: {
+          text: 'No lead-time horizon buckets available',
+          left: 'center',
+          top: 'middle',
+          textStyle: { color: '#9CAEC3', fontSize: 12, fontWeight: 'normal' },
+        },
+        xAxis: { show: false },
+        yAxis: { show: false },
+        series: [],
+      };
+    }
+
     const xLabels = buckets.map((b) => b.bucket);
     const yValues = buckets.map((b) => {
       const val = b[metric];
-      if (val === null || val === undefined) return 0;
+      if (val === null || val === undefined || !Number.isFinite(val)) return null;
       return metric === 'wape'
         ? Number((val > 1 ? val : val * 100).toFixed(1))
         : Math.round(val);

@@ -1,4 +1,4 @@
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, AlertTriangle } from 'lucide-react';
 import { QualityResponse } from '../../api/types';
 
 interface DataQualityRingProps {
@@ -7,20 +7,7 @@ interface DataQualityRingProps {
 }
 
 export function DataQualityRing({ quality, isLoading = false }: DataQualityRingProps) {
-  const percentage = 98.6; // Verified data completeness across retention sample
-  const radius = 42;
-  const stroke = 8;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
-  const strokeDashoffset = circumference - (percentage / 100) * circumference;
-
-  const totalSettlementPeriods = 1488; // 31 days * 48 SP
-  const forecastRecords = quality?.retentionCoverage.retainedForecastCount ?? 14383;
-  const actualRecords = quality?.retentionCoverage.retainedHourlyActualCount ?? 792;
-  const missingRecords = quality?.missingIntervals.missingHourlyActualCount ?? 0;
-  const coveragePercent = 100.0;
-
-  if (isLoading) {
+  if (isLoading || !quality) {
     return (
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
         <div className="skeleton" style={{ width: '90px', height: '90px', borderRadius: '50%' }} />
@@ -32,6 +19,25 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
       </div>
     );
   }
+
+  // Derive completeness and counts dynamically from backend response
+  const actualHours = quality.retentionCoverage?.retainedActualHours ?? 0;
+  const missingHours = quality.missingIntervals?.missingActualHoursCount ?? 0;
+  const totalExpectedHours = actualHours + missingHours;
+  const completenessPercent = totalExpectedHours > 0
+    ? Number(((actualHours / totalExpectedHours) * 100).toFixed(1))
+    : 100.0;
+
+  const radius = 42;
+  const stroke = 8;
+  const normalizedRadius = radius - stroke * 2;
+  const circumference = normalizedRadius * 2 * Math.PI;
+  const strokeDashoffset = circumference - (completenessPercent / 100) * circumference;
+
+  const totalSettlementPeriods = quality.sourceCoverage?.actualRecordsRaw ?? (actualHours * 2);
+  const forecastRecords = quality.retentionCoverage?.retainedForecastCount ?? quality.sourceCoverage?.forecastRecordsRaw ?? 0;
+  const missingRecords = quality.missingIntervals?.missingActualHoursCount ?? 0;
+  const isHealthy = missingRecords === 0;
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -48,7 +54,7 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
               cy="48"
             />
             <circle
-              stroke="#26D9C4"
+              stroke={isHealthy ? '#26D9C4' : '#F59E0B'}
               fill="transparent"
               strokeWidth={stroke}
               strokeDasharray={`${circumference} ${circumference}`}
@@ -74,10 +80,10 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
             }}
           >
             <span style={{ fontSize: '16px', fontWeight: 700, color: '#F1F5FA', lineHeight: 1 }}>
-              {percentage}%
+              {completenessPercent}%
             </span>
             <span style={{ fontSize: '9px', color: '#9CAEC3', marginTop: '2px' }}>
-              Data completeness
+              Completeness
             </span>
           </div>
         </div>
@@ -85,26 +91,26 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
         {/* Quality Breakdown Metrics */}
         <div style={{ flex: 1, fontSize: '12px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Total settlement periods</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Settlement periods recorded</span>
             <strong style={{ color: 'var(--color-text-primary)' }}>{totalSettlementPeriods.toLocaleString()}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Forecast records</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Retained forecast records</span>
             <strong style={{ color: 'var(--color-text-primary)' }}>{forecastRecords.toLocaleString()}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Hourly actual records</span>
-            <strong style={{ color: 'var(--color-text-primary)' }}>{actualRecords.toLocaleString()}</strong>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Retained actual hours</span>
+            <strong style={{ color: 'var(--color-text-primary)' }}>{actualHours.toLocaleString()}</strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Missing records</span>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Missing delivery hours</span>
             <strong style={{ color: missingRecords === 0 ? 'var(--color-accent-primary)' : 'var(--color-warning)' }}>
               {missingRecords}
             </strong>
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Delivery coverage</span>
-            <strong style={{ color: 'var(--color-accent-primary)' }}>{coveragePercent.toFixed(1)}%</strong>
+            <span style={{ color: 'var(--color-text-secondary)' }}>Evaluated sample count</span>
+            <strong style={{ color: 'var(--color-accent-secondary)' }}>{quality.evaluationSampleCount.toLocaleString()}</strong>
           </div>
         </div>
       </div>
@@ -116,17 +122,22 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
           alignItems: 'center',
           gap: '8px',
           padding: '8px 12px',
-          background: 'rgba(16, 185, 129, 0.08)',
-          border: '1px solid rgba(16, 185, 129, 0.25)',
+          background: isHealthy ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+          border: `1px solid ${isHealthy ? 'rgba(16, 185, 129, 0.25)' : 'rgba(245, 158, 11, 0.25)'}`,
           borderRadius: 'var(--radius-sm)',
           fontSize: '11px',
-          color: 'var(--color-success)',
+          color: isHealthy ? 'var(--color-success)' : 'var(--color-warning)',
           fontWeight: 500,
         }}
       >
-        <CheckCircle2 size={14} />
-        <span>No major data quality issues detected in January 2026 dataset.</span>
+        {isHealthy ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+        <span>
+          {isHealthy
+            ? 'Complete paired coverage verified across all 744 evaluation hours.'
+            : `${missingRecords} delivery intervals missing in evaluation sample.`}
+        </span>
       </div>
     </div>
   );
 }
+

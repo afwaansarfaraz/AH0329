@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Database } from 'lucide-react';
 import { Card } from '../components/common/Card';
 import { DataQualityRing } from '../components/charts/DataQualityRing';
-import { api } from '../api/client';
+import { api, formatDateOnly } from '../api/client';
 import { QualityResponse } from '../api/types';
 
 export function DataQualityPage() {
@@ -30,6 +30,11 @@ export function DataQualityPage() {
       isCurrent = false;
     };
   }, []);
+
+  const fcStart = formatDateOnly(quality?.sourceCoverage?.forecastStartMin);
+  const fcEnd = formatDateOnly(quality?.sourceCoverage?.forecastStartMax);
+  const actStart = formatDateOnly(quality?.sourceCoverage?.actualStartMin);
+  const actEnd = formatDateOnly(quality?.sourceCoverage?.actualStartMax);
 
   return (
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
@@ -67,23 +72,33 @@ export function DataQualityPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>WINDFOR Forecasts Window:</span>
-              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>2025-12-31 to 2026-02-03</span>
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+                {quality ? `${fcStart} to ${fcEnd}` : 'Loading...'}
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Raw WINDFOR Records:</span>
-              <span style={{ color: 'var(--color-accent-primary)', fontWeight: 600 }}>18,104 records (248 runs)</span>
+              <span style={{ color: 'var(--color-accent-primary)', fontWeight: 600 }}>
+                {quality?.sourceCoverage?.forecastRecordsRaw?.toLocaleString() ?? '—'} records
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>FUELHH Actuals Window:</span>
-              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>2026-01-01 to 2026-02-01</span>
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+                {quality ? `${actStart} to ${actEnd}` : 'Loading...'}
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>FUELHH Wind Generation Records:</span>
-              <span style={{ color: 'var(--color-actual)', fontWeight: 600 }}>1,584 half-hourly periods</span>
+              <span style={{ color: 'var(--color-actual)', fontWeight: 600 }}>
+                {quality?.sourceCoverage?.actualRecordsRaw?.toLocaleString() ?? '—'} half-hourly periods
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Evaluated Paired Hours (N):</span>
-              <span style={{ color: 'var(--color-accent-secondary)', fontWeight: 700 }}>744 complete hours</span>
+              <span style={{ color: 'var(--color-accent-secondary)', fontWeight: 700 }}>
+                {quality?.evaluationSampleCount?.toLocaleString() ?? '—'} complete hours
+              </span>
             </div>
           </div>
         </Card>
@@ -93,23 +108,33 @@ export function DataQualityPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Duplicate Forecast Keys:</span>
-              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>0 (Zero duplicates)</span>
+              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>
+                {quality?.duplicateRecords?.forecastDuplicatesEncountered ?? 0} (Zero duplicates)
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Duplicate Actual Keys:</span>
-              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>0 (Zero duplicates)</span>
+              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>
+                {quality?.duplicateRecords?.actualDuplicatesEncountered ?? 0} (Zero duplicates)
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Missing Evaluation Hours:</span>
-              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>0 (100% paired complete)</span>
+              <span style={{ color: 'var(--color-success)', fontWeight: 600 }}>
+                {quality?.missingIntervals?.missingActualHoursCount ?? 0} ({quality?.missingIntervals?.missingActualHoursCount === 0 ? '100% paired complete' : 'gaps detected'})
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Retrospective Hindcasts Excluded:</span>
-              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>3,721 records (leadTime &lt; 0h)</span>
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+                {quality?.retentionCoverage?.hindcastRecordsExcluded?.toLocaleString() ?? 0} records (leadTime &lt; 0h)
+              </span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '6px 0' }}>
               <span style={{ color: 'var(--color-text-secondary)' }}>Forward Horizon Retention:</span>
-              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>0h to 72h forward only</span>
+              <span style={{ color: 'var(--color-text-primary)', fontWeight: 600 }}>
+                {quality?.retentionCoverage?.retentionPolicy ?? '0h to 72h forward only'}
+              </span>
             </div>
           </div>
         </Card>

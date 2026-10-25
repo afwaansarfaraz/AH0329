@@ -20,35 +20,35 @@ export function ErrorDistributionChart({
     // If we have intervals, build actual frequency bins
     const errors = intervals
       .map((i) => (errorType === 'signed' ? i.signedErrorMW : i.absoluteErrorMW))
-      .filter((v): v is number => v !== null && v !== undefined);
+      .filter((v): v is number => v !== null && v !== undefined && Number.isFinite(v));
 
-    let bins: { label: string; count: number; binStart: number }[] = [];
-
-    if (errors.length > 0) {
-      const minErr = errorType === 'signed' ? Math.min(-3000, ...errors) : 0;
-      const maxErr = Math.max(3000, ...errors);
-      const binCount = 15;
-      const binWidth = (maxErr - minErr) / binCount;
-
-      bins = Array.from({ length: binCount }, (_, i) => {
-        const start = minErr + i * binWidth;
-        const end = start + binWidth;
-        const count = errors.filter((e) => e >= start && e < end).length;
-        const label = `${Math.round(start).toLocaleString()} to ${Math.round(end).toLocaleString()}`;
-        return { label, count, binStart: start };
-      });
-    } else {
-      // Fallback synthetic bins
-      bins = [
-        { label: '< -1000', count: 4, binStart: -2000 },
-        { label: '-1000 to 0', count: 12, binStart: -1000 },
-        { label: '0 to 1000', count: 35, binStart: 0 },
-        { label: '1000 to 2000', count: 68, binStart: 1000 },
-        { label: '2000 to 3000', count: 42, binStart: 2000 },
-        { label: '3000 to 4000', count: 18, binStart: 3000 },
-        { label: '> 4000', count: 6, binStart: 4000 },
-      ];
+    if (errors.length === 0) {
+      return {
+        backgroundColor: 'transparent',
+        title: {
+          text: 'No evaluated intervals available for distribution calculation',
+          left: 'center',
+          top: 'middle',
+          textStyle: { color: '#9CAEC3', fontSize: 12, fontWeight: 'normal' },
+        },
+        xAxis: { show: false },
+        yAxis: { show: false },
+        series: [],
+      };
     }
+
+    const minErr = errorType === 'signed' ? Math.min(-2000, ...errors) : 0;
+    const maxErr = Math.max(2000, ...errors);
+    const binCount = Math.min(15, Math.max(5, Math.ceil(Math.sqrt(errors.length))));
+    const binWidth = (maxErr - minErr) / binCount || 100;
+
+    const bins = Array.from({ length: binCount }, (_, i) => {
+      const start = minErr + i * binWidth;
+      const end = start + binWidth;
+      const count = errors.filter((e) => e >= start && (i === binCount - 1 ? e <= end : e < end)).length;
+      const label = `${Math.round(start).toLocaleString()} to ${Math.round(end).toLocaleString()}`;
+      return { label, count, binStart: start };
+    });
 
     const xLabels = bins.map((b) => b.label);
     const yCounts = bins.map((b) => b.count);
@@ -67,6 +67,7 @@ export function ErrorDistributionChart({
           if (!Array.isArray(params) || params.length === 0) return '';
           const idx = params[0].dataIndex;
           const bin = bins[idx];
+          if (!bin) return '';
           return `
             <div style="font-weight: 600; color: #F1F5FA; margin-bottom: 4px;">
               Range: ${bin.label} MW
@@ -113,6 +114,7 @@ export function ErrorDistributionChart({
             borderRadius: [4, 4, 0, 0],
             color: (params: { dataIndex: number }) => {
               const bin = bins[params.dataIndex];
+              if (!bin) return '#26D9C4';
               if (errorType === 'signed') {
                 if (bin.binStart < 0) return '#38BDF8'; // Underforecast: blue
                 if (bin.binStart < 1500) return '#26D9C4'; // Mild overforecast: teal
@@ -138,8 +140,8 @@ export function ErrorDistributionChart({
         }}
       >
         <div style={{ display: 'flex', gap: '8px', fontSize: '11px', color: 'var(--color-text-muted)' }}>
-          {distribution?.p50 !== undefined && (
-            <span>Median: <strong style={{ color: 'var(--color-text-primary)' }}>+{Math.round(distribution.p50 ?? 0)} MW</strong></span>
+          {distribution?.p50 !== undefined && distribution?.p50 !== null && (
+            <span>Median (P50): <strong style={{ color: 'var(--color-text-primary)' }}>{distribution.p50 > 0 ? '+' : ''}{Math.round(distribution.p50).toLocaleString()} MW</strong></span>
           )}
         </div>
         <div

@@ -170,3 +170,29 @@ With February 1 actuals included, the full 31-day January decision window was ev
   * `vercel.json` updated with `buildCommand: npm run build`, `outputDirectory: dist`, and Python serverless function mapping for `/api/(.*)`.
   * Cloud deployment is fully configured; live deployment execution awaits authenticated deployment credentials (`VERCEL_TOKEN`).
 
+---
+
+## 9. Phase 3 Final Polish, Data Integrity & Quality Audit
+
+### A. Elimination of Hardcoded Placeholders & Synthetic Data
+1. **Data Completeness Calculation (`DataQualityRing.tsx`):**
+   * Removed hardcoded `98.6%` placeholder. Completeness is now computed dynamically: $\frac{\text{retainedActualHours}}{\text{retainedActualHours} + \text{missingActualHours}} \times 100\% = 100.0\%$.
+   * Settlement period counts, forecast record counts, and sample size are bound directly to the live `/api/quality` response.
+2. **Sparkline Deletion on KPI Cards (`DecisionOverviewPage.tsx`):**
+   * Removed hardcoded synthetic sparkline arrays (`[2400, 2200, ...]` and `[0.3, 0.4, ...]`). As the backend returns scalar evaluation summaries, rendering fabricated time-series sparklines breached data integrity standards.
+3. **Dynamic Error Histogram (`ErrorDistributionChart.tsx`):**
+   * Completely eliminated synthetic fallback histogram bins (`[{ label: '< -1000', count: 4 }, ...]`).
+   * When no evaluation intervals are present, an honest empty-state title is displayed without fake bars.
+4. **Dynamic Contextual Callouts:**
+   * Dynamic bias amounts and persistence skill percentages in `DecisionOverviewPage`, `ForecastAccuracyPage`, and `ErrorDistributionPage`.
+
+### B. Strict Missing-Value Policy
+* All formatting utilities in `src/api/client.ts` (`formatMW`, `formatSignedMW`, `formatWape`, `formatSkill`, `formatDateOnly`, `formatDateTime`) enforce `Number.isFinite(val)` validation.
+* Zero (`0`) is correctly preserved as a legitimate measured power or error value (`0 MW`, `+0 MW`, `0.0%`), never silently converted to fallback.
+* Missing, `null`, `undefined`, `NaN`, or `Infinity` values return explicit fallback strings (`"Not available"`, `"Insufficient data"`, or `"—"`).
+* In charts, missing interval values return `null` rather than `0` to prevent misleading zero-watt dips.
+
+### C. Cross-Platform Build & Dependency Reliability
+* Added `@rollup/rollup-linux-x64-gnu` and `@rollup/rollup-linux-x64-musl` to `optionalDependencies` in `package.json`, resolving native binary installation issues when building in Linux Docker containers and CI/Vercel environments from Windows lockfiles.
+
+

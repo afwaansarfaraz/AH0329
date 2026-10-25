@@ -38,11 +38,11 @@ export function Header({
     };
   }, []);
 
-  // Dates in January 2026 evaluation window (Jan 2 to Jan 31)
-  const availableDates = Array.from({ length: 30 }, (_, i) => {
-    const day = String(i + 2).padStart(2, '0');
-    return `2026-01-${day}`;
-  });
+  // Dates in January 2026 evaluation window (Jan 2 to Feb 1)
+  const availableDates = [
+    ...Array.from({ length: 30 }, (_, i) => `2026-01-${String(i + 2).padStart(2, '0')}`),
+    '2026-02-01',
+  ];
 
   return (
     <header
@@ -236,7 +236,7 @@ export function Header({
                   : 'none',
             }}
           />
-          <span>{apiStatus === 'online' ? 'API Online' : apiStatus === 'checking' ? 'Checking...' : 'API Offline'}</span>
+          <span>{apiStatus === 'online' ? 'API Ready (Jan 2026 Archive)' : apiStatus === 'checking' ? 'Connecting...' : 'API Offline'}</span>
           {apiStatus === 'offline' && (
             <button
               onClick={() => window.location.reload()}

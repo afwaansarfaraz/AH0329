@@ -101,34 +101,70 @@ export const api = {
   getQuality: () => fetchJson<QualityResponse>('/api/quality'),
 };
 
-// Formatting utilities
-export function formatMW(val?: number | null): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+// Formatting utilities adhering to WindDesk missing-value policy
+export function isValidNumber(val: unknown): val is number {
+  return typeof val === 'number' && Number.isFinite(val);
+}
+
+export function formatMW(val?: number | null, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
   return `${Math.round(val).toLocaleString()} MW`;
 }
 
-export function formatSignedMW(val?: number | null): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
-  const prefix = val > 0 ? '+' : '';
-  return `${prefix}${Math.round(val).toLocaleString()} MW`;
+export function formatSignedMW(val?: number | null, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
+  const rounded = Math.round(val);
+  const prefix = rounded > 0 ? '+' : '';
+  return `${prefix}${rounded.toLocaleString()} MW`;
 }
 
-export function formatPercent(val?: number | null, decimals = 1): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
-  // If value is already in percentage scale (> 1.0), do not multiply by 100 again
-  const pct = Math.abs(val) > 1.0 ? val : val * 100;
+export function formatWape(val?: number | null, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
+  // Backend returns WAPE as raw percentage (e.g. 17.65)
+  const pct = Math.abs(val) <= 1.0 && val !== 0 ? val * 100 : val;
+  return `${pct.toFixed(1)}%`;
+}
+
+export function formatSkill(val?: number | null, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
+  // Backend returns skill as decimal ratio (e.g. 0.518 -> +51.8%)
+  const pct = Math.abs(val) <= 1.0 ? val * 100 : val;
+  const prefix = pct > 0 ? '+' : '';
+  return `${prefix}${pct.toFixed(1)}%`;
+}
+
+export function formatPercent(val?: number | null, decimals = 1, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
+  const pct = Math.abs(val) <= 1.0 && val !== 0 ? val * 100 : val;
   return `${pct.toFixed(decimals)}%`;
 }
 
-export function formatRawPercent(val?: number | null, decimals = 1): string {
-  if (val === undefined || val === null || isNaN(val)) return '—';
+export function formatRawPercent(val?: number | null, decimals = 1, fallback = '—'): string {
+  if (!isValidNumber(val)) return fallback;
   return `${val.toFixed(decimals)}%`;
 }
 
-export function formatDateTime(isoStr?: string | null): string {
-  if (!isoStr) return '—';
+export function formatDateOnly(isoStr?: string | null, fallback = '—'): string {
+  if (!isoStr) return fallback;
   try {
     const dt = new Date(isoStr);
+    if (isNaN(dt.getTime())) return fallback;
+    return dt.toLocaleDateString('en-GB', {
+      timeZone: 'Europe/London',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric',
+    });
+  } catch {
+    return fallback;
+  }
+}
+
+export function formatDateTime(isoStr?: string | null, fallback = '—'): string {
+  if (!isoStr) return fallback;
+  try {
+    const dt = new Date(isoStr);
+    if (isNaN(dt.getTime())) return fallback;
     return dt.toLocaleString('en-GB', {
       timeZone: 'Europe/London',
       day: '2-digit',
@@ -138,20 +174,22 @@ export function formatDateTime(isoStr?: string | null): string {
       minute: '2-digit',
     });
   } catch {
-    return isoStr;
+    return fallback;
   }
 }
 
-export function formatTimeOnly(isoStr?: string | null): string {
-  if (!isoStr) return '—';
+export function formatTimeOnly(isoStr?: string | null, fallback = '—'): string {
+  if (!isoStr) return fallback;
   try {
     const dt = new Date(isoStr);
+    if (isNaN(dt.getTime())) return fallback;
     return dt.toLocaleTimeString('en-GB', {
       timeZone: 'Europe/London',
       hour: '2-digit',
       minute: '2-digit',
     });
   } catch {
-    return isoStr;
+    return fallback;
   }
 }
+
