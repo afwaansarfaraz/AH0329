@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Search, Calendar, Clock, RefreshCw } from 'lucide-react';
+import { Calendar, Clock, RefreshCw } from 'lucide-react';
 import { api } from '../../api/client';
+import { SearchBar } from './SearchBar';
+import { NavTab } from './Sidebar';
 
 interface HeaderProps {
   selectedDate: string;
   onSelectDate: (date: string) => void;
   selectedCutoff: string;
   onSelectCutoff: (cutoff: string) => void;
+  currentTab?: NavTab;
+  onSelectTab?: (tab: NavTab) => void;
   onSearch?: (term: string) => void;
 }
 
@@ -15,9 +19,10 @@ export function Header({
   onSelectDate,
   selectedCutoff,
   onSelectCutoff,
+  currentTab = 'overview',
+  onSelectTab = () => {},
 }: HeaderProps) {
   const [apiStatus, setApiStatus] = useState<'online' | 'checking' | 'offline'>('checking');
-  const [searchTerm, setSearchTerm] = useState('');
 
   // Check health on mount
   useEffect(() => {
@@ -60,47 +65,13 @@ export function Header({
         top: 0,
       }}
     >
-      {/* Search Input */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px',
-          backgroundColor: 'var(--color-surface-elevated)',
-          border: '1px solid var(--color-border)',
-          borderRadius: 'var(--radius-sm)',
-          padding: '6px 12px',
-          width: '320px',
-        }}
-      >
-        <Search size={16} style={{ color: 'var(--color-text-muted)', flexShrink: 0 }} />
-        <input
-          type="text"
-          placeholder="Search dates, vintage runs..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          style={{
-            background: 'transparent',
-            border: 'none',
-            outline: 'none',
-            color: 'var(--color-text-primary)',
-            fontSize: '13px',
-            width: '100%',
-          }}
-        />
-        <kbd
-          style={{
-            backgroundColor: 'var(--color-surface-panel)',
-            color: 'var(--color-text-muted)',
-            fontSize: '11px',
-            padding: '2px 5px',
-            borderRadius: '3px',
-            border: '1px solid var(--color-border)',
-          }}
-        >
-          /
-        </kbd>
-      </div>
+      {/* Interactive Global SearchBar */}
+      <SearchBar
+        selectedDate={selectedDate}
+        onSelectDate={onSelectDate}
+        currentTab={currentTab}
+        onSelectTab={onSelectTab}
+      />
 
       {/* Right Controls */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>

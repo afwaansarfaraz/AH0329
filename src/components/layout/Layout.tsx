@@ -40,6 +40,8 @@ export function Layout({
           onSelectDate={onSelectDate}
           selectedCutoff={selectedCutoff}
           onSelectCutoff={onSelectCutoff}
+          currentTab={currentTab}
+          onSelectTab={onSelectTab}
         />
 
         <main
