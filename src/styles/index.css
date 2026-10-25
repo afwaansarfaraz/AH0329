@@ -32,7 +32,7 @@ html, body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--color-surface-deep);
+  background: var(--color-canvas);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -92,9 +92,9 @@ code, pre {
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--color-surface-elevated) 25%,
-    var(--color-surface-panel) 50%,
-    var(--color-surface-elevated) 75%
+    var(--color-surface-panel) 25%,
+    var(--color-border) 50%,
+    var(--color-surface-panel) 75%
   );
   background-size: 200% 100%;
   animation: shimmer 1.8s infinite;
@@ -154,11 +154,11 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   font-weight: 600;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  transition: filter var(--transition-fast), transform var(--transition-fast);
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
 .btn-primary:hover {
-  filter: brightness(1.1);
+  background: var(--color-accent-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -199,31 +199,31 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
 .badge-teal {
   background: var(--color-accent-primary-dim);
   color: var(--color-accent-primary);
-  border: 1px solid rgba(38, 217, 196, 0.3);
+  border: 1px solid rgba(13, 148, 136, 0.25);
 }
 
 .badge-lime {
-  background: var(--color-accent-secondary-dim);
-  color: var(--color-accent-secondary);
-  border: 1px solid rgba(183, 243, 107, 0.3);
+  background: var(--color-success-dim);
+  color: var(--color-success);
+  border: 1px solid rgba(22, 163, 74, 0.25);
 }
 
 .badge-amber {
   background: var(--color-warning-dim);
   color: var(--color-warning);
-  border: 1px solid rgba(245, 158, 11, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.25);
 }
 
 .badge-blue {
   background: var(--color-actual-dim);
   color: var(--color-actual);
-  border: 1px solid rgba(56, 189, 248, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
 .badge-red {
   background: var(--color-error-dim);
   color: var(--color-error);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.25);
 }
 
 /* Custom Cursor Responsive & Accessibility Overrides */
@@ -243,6 +243,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   .main-viewport-content {
     padding: 16px 12px;
   }
+
+  .hero-welcome-banner {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+    padding: 20px !important;
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, rgba(234, 245, 252, 0.94) 50%, rgba(234, 245, 252, 0.8) 100%), url('/images/wind-turbines-hero.jpg') !important;
+  }
 }
-
-

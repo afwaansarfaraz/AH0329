@@ -6,13 +6,15 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.100%2B-009688.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Vite](https://img.shields.io/badge/Vite-6.1-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/ECharts-5.6-AA344D.svg?logo=apacheecharts&logoColor=white)](https://echarts.apache.org/)
-[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#m-testing-and-verification)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-21%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
-[![Docker](https://img.shields.io/badge/Docker-Verified-2496ED.svg?logo=docker&logoColor=white)](#i-installation-and-local-setup)
-[![License](https://img.shields.io/badge/License-Unlicensed-lightgrey.svg)](#r-contribution-licensing-and-acknowledgements)
+[![Live Deployment](https://img.shields.io/badge/Live%20Demo-wind--ah0329.vercel.app-0D9488.svg?logo=vercel&logoColor=white)](https://wind-ah0329.vercel.app/)
+[![Backend Tests](https://img.shields.io/badge/Backend%20Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#n-testing-and-verification)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-21%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#n-testing-and-verification)
+[![Docker](https://img.shields.io/badge/Docker-Verified-2496ED.svg?logo=docker&logoColor=white)](#j-installation-and-local-setup)
 
 > **Day-Ahead Wind Procurement Decision Support & Forecast Accuracy Analytics**  
 > Analyzing Great Britain electricity market wind generation forecasts (WINDFOR) and realized outturn (FUELHH) for procurement decisions made during January 2026.
+> 
+> **Live Deployment:** [https://wind-ah0329.vercel.app/](https://wind-ah0329.vercel.app/)
 
 ---
 
@@ -20,23 +22,24 @@
 
 - [A. Project Introduction](#a-project-introduction)
 - [B. Key Features](#b-key-features)
-- [C. How the System Works](#c-how-the-system-works)
-- [D. Complete Technology Stack](#d-complete-technology-stack)
-- [E. Complete Project Structure](#e-complete-project-structure)
-- [F. Data Sources and Data Processing](#f-data-sources-and-data-processing)
-- [G. Decision-Time Logic and Prevention of Data Leakage](#g-decision-time-logic-and-prevention-of-data-leakage)
-- [H. Forecast Accuracy Metrics](#h-forecast-accuracy-metrics)
-- [I. Installation and Local Setup](#i-installation-and-local-setup)
-- [J. Data Ingestion Guide](#j-data-ingestion-guide)
-- [K. API Reference](#k-api-reference)
-- [L. Configuration Reference](#l-configuration-reference)
-- [M. Testing and Verification](#m-testing-and-verification)
-- [N. Example Results and Interpretation](#n-example-results-and-interpretation)
-- [O. Limitations and Assumptions](#o-limitations-and-assumptions)
-- [P. Deployment Status](#p-deployment-status)
-- [Q. Roadmap](#q-roadmap)
-- [R. Contribution, Licensing and Acknowledgements](#r-contribution-licensing-and-acknowledgements)
-- [S. Conclusion](#s-conclusion)
+- [C. Application Visual Tour](#c-application-visual-tour)
+- [D. How the System Works](#d-how-the-system-works)
+- [E. Complete Technology Stack](#e-complete-technology-stack)
+- [F. Complete Project Structure](#f-complete-project-structure)
+- [G. Data Sources and Data Processing](#g-data-sources-and-data-processing)
+- [H. Decision-Time Logic and Prevention of Data Leakage](#h-decision-time-logic-and-prevention-of-data-leakage)
+- [I. Forecast Accuracy Metrics](#i-forecast-accuracy-metrics)
+- [J. Installation and Local Setup](#j-installation-and-local-setup)
+- [K. Data Ingestion Guide](#k-data-ingestion-guide)
+- [L. API Reference](#l-api-reference)
+- [M. Configuration Reference](#m-configuration-reference)
+- [N. Testing and Verification](#n-testing-and-verification)
+- [O. Example Results and Interpretation](#o-example-results-and-interpretation)
+- [P. Limitations and Assumptions](#p-limitations-and-assumptions)
+- [Q. Deployment Status](#q-deployment-status)
+- [R. Roadmap](#r-roadmap)
+- [S. Contribution, Licensing and Acknowledgements](#s-contribution-licensing-and-acknowledgements)
+- [T. Conclusion](#t-conclusion)
 
 ---
 
@@ -64,7 +67,7 @@ WindDesk is a **complete, verified full-stack analytics platform**:
 * **Deterministic Offline Ingestion Pipeline:** Normalizes and aligns 18,104 raw WINDFOR forecasts and 31,680 FUELHH observations into verified runtime artifacts.
 * **Anti-Leakage Decision Engine:** Mathematically guarantees zero forward data leakage across all 31 delivery days ($N = 744$ paired hours).
 * **Robust Domain & API Services:** 7 production REST API endpoints served via FastAPI with comprehensive OpenAPI documentation.
-* **Midnight Energy Intelligence Dashboard:** Premium React 18 + TypeScript + Apache ECharts frontend with 6 modular analytics views, responsive layouts, data integrity guarantees (zero fake sparklines or synthetic data), and smooth motion design.
+* **Light Sky Blue Energy Dashboard:** Polished React 18 + TypeScript + Apache ECharts frontend with 5 modular analytics views, responsive enterprise layouts, data integrity guarantees (zero fake sparklines or synthetic data), and smooth motion design.
 * **Multi-Container Docker & Compose Orchestration:** Independent `wind-backend` and `wind-frontend` containers with health checks and Nginx reverse proxy.
 * **Offline Automated Testing:** **52 backend tests** and **21 frontend tests** passing 100% offline.
 
@@ -85,7 +88,33 @@ WindDesk is a **complete, verified full-stack analytics platform**:
 
 ---
 
-## C. How the System Works
+## C. Application Visual Tour
+
+WindDesk features an enterprise-grade **Option 1 — Light Sky Blue** visual design palette (`#EAF5FC` canvas, crisp `#FFFFFF` cards, `#172B4D` primary text, `#64748B` secondary text, `#0D9488` teal accents, and `#3B82F6` chart blue). Below are actual screenshots captured from the live application showing all 5 core analytics views.
+
+### 1. Decision Overview (Flagship Dashboard)
+![WindDesk Decision Overview](docs/screenshots/dashboard.png)
+*Figure 1: Flagship Day-Ahead Wind Procurement Decision Overview with panoramic wind-turbine landscape hero banner. Displays headline metrics for the selected delivery day (MAE 5,375 MW, RMSE 5,399 MW, Bias +5,375 MW Overforecasting, WAPE 93.3%, and Naive Persistence Skill +51.8%), interactive ECharts forecast vs realized outturn series, cutoff metadata pill, and operational insights.*
+
+### 2. Forecast Publication Vintages
+![WindDesk Forecast Vintages](docs/screenshots/forecast-vintages.png)
+*Figure 2: Forecast Vintage Trajectory Analysis. Visualizes successive National Grid ESO publication runs leading up to physical delivery, auditing how model expectations evolved across lead times alongside complete tabular timestamp logs.*
+
+### 3. Forecast Accuracy & Lead-Time Horizons
+![WindDesk Forecast Accuracy Analytics](docs/screenshots/accuracy-analytics.png)
+*Figure 3: Statistical Accuracy Benchmark across the complete 744-hour evaluation sample (Jan 2 – Feb 1, 2026). Evaluates MAE degradation across five forward lead-time horizon buckets ($0\text{--}12\text{h}$ up to $48\text{--}72\text{h}$) under the D-1 09:20 London decision cutoff.*
+
+### 4. Historical Error Distributions & Risk Tail Profiling
+![WindDesk Error Distribution](docs/screenshots/error-distribution.png)
+*Figure 4: Historical Signed Error Percentiles and Frequency Histogram. Highlights key procurement shortfall risk boundaries ($P_5 = -1,151\,\text{MW}$, $P_{50} = +1,592\,\text{MW}$, $P_{95} = +5,283\,\text{MW}$) with signed and absolute error toggle controls.*
+
+### 5. Data Quality & Coverage Diagnostics
+![WindDesk Data Quality](docs/screenshots/data-quality.png)
+*Figure 5: Dataset Health & Ingestion Audit. Features an animated 100% completeness radial ring, Elexon BMRS paired coverage audit across all 1,584 settlement periods, zero duplicate keys, and zero missing evaluation intervals.*
+
+---
+
+## D. How the System Works
 
 The diagram below illustrates the end-to-end data lifecycle, from public Elexon market sources through the ingestion pipeline, domain service layer, and REST API:
 
@@ -124,7 +153,7 @@ flowchart TD
     end
 
     subgraph S6["6. User Interface (React 18 + TypeScript + Vite)"]
-        UI["React + TypeScript + Vite + ECharts Dashboard<br/>6 Analytics Views | Interactive Controls | Custom Cursor"]
+        UI["React + TypeScript + Vite + ECharts Dashboard<br/>5 Analytics Views | Interactive Controls | Custom Cursor"]
     end
 
     S1 --> S2
@@ -147,7 +176,7 @@ flowchart TD
 
 ---
 
-## D. Complete Technology Stack
+## E. Complete Technology Stack
 
 | Technology / Library | Version | Where Used | Why It Is Used | Role in Project | Status |
 | :--- | :---: | :--- | :--- | :--- | :---: |
@@ -170,7 +199,7 @@ flowchart TD
 
 ---
 
-## E. Complete Project Structure
+## F. Complete Project Structure
 
 ```text
 WIND/
@@ -202,19 +231,18 @@ WIND/
 │   │   ├── types.ts                    # Typed interfaces mirroring FastAPI backend models
 │   │   └── client.ts                   # Fetch API client, timeout handling & formatting utils
 │   ├── styles/
-│   │   ├── tokens.css                  # Midnight Energy Intelligence design tokens
+│   │   ├── tokens.css                  # Option 1 — Light Sky Blue design tokens
 │   │   └── index.css                   # Global styles, micro-animations, skeleton loader
 │   ├── components/
 │   │   ├── common/                     # Card, KpiCard, CustomCursor, ErrorBoundary, Badge
 │   │   ├── layout/                     # Collapsible Sidebar, Header, SearchBar
 │   │   └── charts/                     # EChartsWrapper (optimized), ForecastVsActual, Horizon, Distribution, QualityRing
-│   ├── pages/                          # 6 Modular Analytics Views
-│   │   ├── DecisionOverviewPage.tsx    # Flagship dashboard matching Midnight Energy reference
+│   ├── pages/                          # 5 Modular Analytics Views
+│   │   ├── DecisionOverviewPage.tsx    # Flagship dashboard with Option 1 — Light Sky Blue theme
 │   │   ├── VintageComparisonPage.tsx   # Successive forecast revision curves & table
 │   │   ├── ForecastAccuracyPage.tsx    # 744h headline accuracy & 5 lead-time buckets
 │   │   ├── ErrorDistributionPage.tsx   # P5, P50, P95 empirical error histograms
-│   │   ├── DataQualityPage.tsx         # Ingestion provenance, coverage & diagnostics
-│   │   └── MethodologyPage.tsx         # Prototype D-1 09:20 cutoff, math & market rules
+│   │   └── DataQualityPage.tsx         # Ingestion provenance, coverage & diagnostics
 │   └── test/                           # Vitest Unit & Component Tests
 │       ├── setup.ts                    # Polyfills (ResizeObserver) for jsdom
 │       ├── client.test.ts              # Unit tests for formatting utilities (8 tests)
@@ -262,7 +290,7 @@ WIND/
 
 ---
 
-## F. Data Sources and Data Processing
+## G. Data Sources and Data Processing
 
 WindDesk processes public electricity market datasets provided by **Elexon BMRS**:
 
@@ -293,7 +321,7 @@ Because WINDFOR forecasts are 60-minute values and FUELHH actuals are 30-minute 
 
 ---
 
-## G. Decision-Time Logic and Prevention of Data Leakage
+## H. Decision-Time Logic and Prevention of Data Leakage
 
 ### A Simple Procurement Example
 Imagine you are a wind procurement analyst on **January 14, 2026**. You must finalize your power purchases for delivery tomorrow, **January 15, 2026**.
@@ -319,7 +347,7 @@ Time Line on Day D-1 (Jan 14):
 
 ---
 
-## H. Forecast Accuracy Metrics
+## I. Forecast Accuracy Metrics
 
 WindDesk evaluates forecast errors using the standard sign convention:
 $$\text{Error} = \text{Forecast} - \text{Actual}$$
@@ -367,7 +395,7 @@ The persistence benchmark assumes that future wind generation will remain consta
 
 ---
 
-## I. Installation and Local Setup
+## J. Installation and Local Setup
 
 ### Prerequisites
 * Windows 10/11, macOS, or Linux
@@ -401,8 +429,8 @@ docker compose up --build
 
 ```powershell
 # 1. Clone the repository
-git clone https://github.com/afwaansarfaraz/energy-insights-593.git
-cd energy-insights-593
+git clone https://github.com/afwaansarfaraz/AH0329.git
+cd AH0329
 
 # 2. Setup Python backend virtual environment
 python -m venv venv
@@ -447,7 +475,7 @@ npm run dev
 
 ---
 
-## J. Data Ingestion Guide
+## K. Data Ingestion Guide
 
 The deterministic ingestion script is located at [`backend/data/ingest.py`](backend/data/ingest.py).
 
@@ -479,7 +507,7 @@ Ingestion reads raw downloads from the `DATA/` directory:
 
 ---
 
-## K. API Reference
+## L. API Reference
 
 All routes are mounted under the `/api` prefix.
 
@@ -687,7 +715,7 @@ Exposes source coverage, resolution alignment rules, and operational disclosures
 
 ---
 
-## L. Configuration Reference
+## M. Configuration Reference
 
 All settings are centralized in [`backend/domain/config.py`](backend/domain/config.py):
 
@@ -707,7 +735,7 @@ All settings are centralized in [`backend/domain/config.py`](backend/domain/conf
 
 ---
 
-## M. Testing and Verification
+## N. Testing and Verification
 
 The automated test suite runs completely offline with **zero live network calls** or database dependencies.
 
@@ -799,7 +827,7 @@ npm test
 
 ---
 
-## N. Example Results and Interpretation
+## O. Example Results and Interpretation
 
 The following figures represent the verified baseline computed from the finalized 744-hour evaluation sample (January 2 – February 1, 2026, evaluated at D−1 09:20 London cutoff):
 
@@ -821,7 +849,7 @@ The substantial positive bias (**+1,748 MW**) indicates that if a procurement de
 
 ---
 
-## O. Limitations and Assumptions
+## P. Limitations and Assumptions
 
 1. **Resolution Asymmetry:** WINDFOR forecasts are hourly blocks; FUELHH actuals are half-hourly. Actuals are reconciled via arithmetic mean. Sub-hourly ramps and within-hour fluctuations are not captured.
 2. **Decision Cutoff Assumption:** D−1 09:20 Europe/London is an assumed prototype policy. Actual auction gate closures vary by trading venue (e.g. 11:00 UTC for EPEX SPOT Day-Ahead auctions).
@@ -832,7 +860,7 @@ The substantial positive bias (**+1,748 MW**) indicates that if a procurement de
 
 ---
 
-## P. Deployment Status
+## Q. Deployment Status
 
 * **Local Full-Stack Verification:** **PASSED.** React 18 + TypeScript + Apache ECharts dashboard and FastAPI service verified locally; all 7 API endpoints functional with zero console errors.
 * **Multi-Container Docker Compose:** **PASSED.** Both `wind-backend` and `wind-frontend` (Nginx reverse proxy) built and tested locally with automatic health checks (`docker compose up --build`).
@@ -842,7 +870,7 @@ The substantial positive bias (**+1,748 MW**) indicates that if a procurement de
 
 ---
 
-## Q. Roadmap
+## R. Roadmap
 
 ### Completed (Phases 1, 2 & 3)
 - [x] Phase 1: Technical verification spike, source schema inspection, timestamp alignment analysis.
@@ -853,9 +881,9 @@ The substantial positive bias (**+1,748 MW**) indicates that if a procurement de
 - [x] Phase 2: Lead-time horizon analysis ($0\text{--}72\text{h}$) and empirical error distribution ($P_5, P_{50}, P_{95}$).
 - [x] Phase 2: All 7 REST API endpoints implemented and documented with Pydantic models.
 - [x] Phase 2: Comprehensive backend test suite with 52 passing tests.
-- [x] Phase 3: React 18 + TypeScript + Vite frontend dashboard with Midnight Energy Intelligence theme.
+- [x] Phase 3: React 18 + TypeScript + Vite frontend dashboard with Option 1 — Light Sky Blue theme.
 - [x] Phase 3: Apache ECharts interactive time-series, vintage revisions, and distribution plots.
-- [x] Phase 3: 6 modular analytics views (Overview, Vintages, Accuracy, Distribution, Quality, Methodology).
+- [x] Phase 3: 5 modular analytics views (Overview, Vintages, Accuracy, Distribution, Quality).
 - [x] Phase 3: Multi-container Docker & Docker Compose setup with Nginx reverse proxy.
 - [x] Phase 3: Vitest frontend component test suite (21 tests passing across 3 suites).
 - [x] Phase 3: Full-stack Vercel serverless deployment configuration.
@@ -867,7 +895,7 @@ The substantial positive bias (**+1,748 MW**) indicates that if a procurement de
 
 ---
 
-## R. Contribution, Licensing and Acknowledgements
+## S. Contribution, Licensing and Acknowledgements
 
 ### Contributions
 This project is currently maintained as an open-source demonstration for day-ahead energy analytics. Contributions, bug reports, and suggestions are welcome via GitHub Issues and Pull Requests.
@@ -883,6 +911,6 @@ In accordance with SWE challenge guidelines and modern engineering standards, AI
 
 ---
 
-## S. Conclusion
+## T. Conclusion
 
-WindDesk delivers a complete, verified, and leak-free wind procurement intelligence platform. Combining a high-performance Python FastAPI calculation engine with a sophisticated Midnight Energy Intelligence React dashboard, WindDesk empowers energy analysts and power trading desks to evaluate day-ahead forecast accuracy, audit publication revisions, and mitigate volume shortfall imbalance risk across the Great Britain power grid.
+WindDesk delivers a complete, verified, and leak-free wind procurement intelligence platform. Combining a high-performance Python FastAPI calculation engine with a polished Option 1 — Light Sky Blue React dashboard, WindDesk empowers energy analysts and power trading desks to evaluate day-ahead forecast accuracy, audit publication revisions, and mitigate volume shortfall imbalance risk across the Great Britain power grid.

@@ -8,7 +8,6 @@ import { VintageComparisonPage } from './pages/VintageComparisonPage';
 import { ForecastAccuracyPage } from './pages/ForecastAccuracyPage';
 import { ErrorDistributionPage } from './pages/ErrorDistributionPage';
 import { DataQualityPage } from './pages/DataQualityPage';
-import { MethodologyPage } from './pages/MethodologyPage';
 
 export function App() {
   const [currentTab, setCurrentTab] = useState<NavTab>('overview');
@@ -38,8 +37,6 @@ export function App() {
         );
       case 'quality':
         return <DataQualityPage />;
-      case 'methodology':
-        return <MethodologyPage />;
       default:
         return (
           <DecisionOverviewPage

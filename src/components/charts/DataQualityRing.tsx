@@ -52,7 +52,7 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
             height: `${size}px`,
             flexShrink: 0,
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(38, 217, 196, 0.05) 0%, rgba(16, 28, 50, 0.25) 70%, transparent 100%)',
+            background: 'radial-gradient(circle, rgba(13, 148, 136, 0.08) 0%, rgba(241, 247, 251, 0.8) 70%, transparent 100%)',
           }}
         >
           <svg
@@ -151,7 +151,7 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
           </div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', gap: '8px' }}>
             <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Evaluated sample count</span>
-            <strong style={{ color: 'var(--color-accent-secondary)', flexShrink: 0 }}>{quality.evaluationSampleCount.toLocaleString()}</strong>
+            <strong style={{ color: 'var(--color-accent-primary)', flexShrink: 0 }}>{quality.evaluationSampleCount.toLocaleString()}</strong>
           </div>
         </div>
       </div>
@@ -163,8 +163,8 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
           alignItems: 'center',
           gap: '8px',
           padding: '8px 12px',
-          background: isHealthy ? 'rgba(16, 185, 129, 0.08)' : 'rgba(245, 158, 11, 0.08)',
-          border: `1px solid ${isHealthy ? 'rgba(16, 185, 129, 0.25)' : 'rgba(245, 158, 11, 0.25)'}`,
+          background: isHealthy ? 'rgba(22, 163, 74, 0.08)' : 'rgba(245, 158, 11, 0.08)',
+          border: `1px solid ${isHealthy ? 'rgba(22, 163, 74, 0.25)' : 'rgba(245, 158, 11, 0.25)'}`,
           borderRadius: 'var(--radius-sm)',
           fontSize: '11px',
           color: isHealthy ? 'var(--color-success)' : 'var(--color-warning)',

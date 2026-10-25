@@ -58,23 +58,24 @@ export function ErrorDistributionChart({
       animationDuration: 300,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(11, 20, 37, 0.95)',
-        borderColor: '#2A3D56',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#DCE8F0',
         borderWidth: 1,
         padding: [10, 12],
-        textStyle: { color: '#F1F5FA', fontSize: 12 },
+        textStyle: { color: '#172B4D', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 4px 12px rgba(23, 43, 77, 0.1); border-radius: 8px;',
         formatter: (params: unknown) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const idx = params[0].dataIndex;
           const bin = bins[idx];
           if (!bin) return '';
           return `
-            <div style="font-weight: 600; color: #F1F5FA; margin-bottom: 4px;">
+            <div style="font-weight: 700; color: #172B4D; margin-bottom: 4px;">
               Range: ${bin.label} MW
             </div>
             <div style="display: flex; justify-content: space-between; gap: 16px;">
-              <span style="color: #26D9C4;">Frequency:</span>
-              <span style="font-weight: 700;">${bin.count} hours</span>
+              <span style="color: #0D9488; font-weight: 600;">Frequency:</span>
+              <span style="font-weight: 700; color: #172B4D;">${bin.count} hours</span>
             </div>
           `;
         },
@@ -89,9 +90,9 @@ export function ErrorDistributionChart({
       xAxis: {
         type: 'category',
         data: xLabels,
-        axisLine: { lineStyle: { color: '#2A3D56' } },
+        axisLine: { lineStyle: { color: '#DCE8F0' } },
         axisLabel: {
-          color: '#9CAEC3',
+          color: '#64748B',
           fontSize: 10,
           rotate: 25,
           interval: 2,
@@ -100,9 +101,9 @@ export function ErrorDistributionChart({
       yAxis: {
         type: 'value',
         axisLine: { show: false },
-        axisLabel: { color: '#9CAEC3', fontSize: 11 },
+        axisLabel: { color: '#64748B', fontSize: 11 },
         splitLine: {
-          lineStyle: { color: '#1E2F44', type: 'dashed' },
+          lineStyle: { color: '#DCE8F0', type: 'dashed' },
         },
       },
       series: [
@@ -114,13 +115,13 @@ export function ErrorDistributionChart({
             borderRadius: [4, 4, 0, 0],
             color: (params: { dataIndex: number }) => {
               const bin = bins[params.dataIndex];
-              if (!bin) return '#26D9C4';
+              if (!bin) return '#0D9488';
               if (errorType === 'signed') {
-                if (bin.binStart < 0) return '#38BDF8'; // Underforecast: blue
-                if (bin.binStart < 1500) return '#26D9C4'; // Mild overforecast: teal
-                return '#B7F36B'; // High overforecast: lime
+                if (bin.binStart < 0) return '#3B82F6'; // Underforecast: chart blue
+                if (bin.binStart < 1500) return '#0D9488'; // Mild overforecast: teal
+                return '#F59E0B'; // High overforecast: warning amber
               }
-              return '#26D9C4';
+              return '#0D9488';
             },
           },
           data: yCounts,
@@ -147,7 +148,7 @@ export function ErrorDistributionChart({
         <div
           style={{
             display: 'inline-flex',
-            background: 'var(--color-surface-deep)',
+            background: 'var(--color-surface-panel)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-sm)',
             padding: '2px',
@@ -160,8 +161,9 @@ export function ErrorDistributionChart({
               fontSize: '11px',
               fontWeight: 600,
               borderRadius: '4px',
-              background: errorType === 'signed' ? 'var(--color-surface-panel)' : 'transparent',
-              color: errorType === 'signed' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+              background: errorType === 'signed' ? 'var(--color-surface-elevated)' : 'transparent',
+              color: errorType === 'signed' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+              boxShadow: errorType === 'signed' ? 'var(--shadow-card)' : 'none',
             }}
           >
             Signed Error
@@ -173,8 +175,9 @@ export function ErrorDistributionChart({
               fontSize: '11px',
               fontWeight: 600,
               borderRadius: '4px',
-              background: errorType === 'absolute' ? 'var(--color-surface-panel)' : 'transparent',
-              color: errorType === 'absolute' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+              background: errorType === 'absolute' ? 'var(--color-surface-elevated)' : 'transparent',
+              color: errorType === 'absolute' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+              boxShadow: errorType === 'absolute' ? 'var(--shadow-card)' : 'none',
             }}
           >
             Absolute Error

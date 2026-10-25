@@ -150,14 +150,14 @@ export function CustomCursor() {
           marginLeft: `-${ringOffset}px`,
           borderRadius: '50%',
           border: isHovering
-            ? '1.5px solid rgba(38, 217, 196, 0.75)'
-            : '1px solid rgba(38, 217, 196, 0.3)',
+            ? '1.5px solid rgba(13, 148, 136, 0.75)'
+            : '1px solid rgba(13, 148, 136, 0.3)',
           backgroundColor: isHovering
-            ? 'rgba(38, 217, 196, 0.12)'
-            : 'rgba(38, 217, 196, 0.04)',
+            ? 'rgba(13, 148, 136, 0.12)'
+            : 'rgba(13, 148, 136, 0.04)',
           boxShadow: isHovering
-            ? '0 0 20px rgba(38, 217, 196, 0.35), inset 0 0 10px rgba(38, 217, 196, 0.15)'
-            : '0 0 12px rgba(38, 217, 196, 0.12)',
+            ? '0 0 16px rgba(13, 148, 136, 0.35), inset 0 0 8px rgba(13, 148, 136, 0.15)'
+            : '0 0 10px rgba(13, 148, 136, 0.12)',
           pointerEvents: 'none',
           zIndex: 99998,
           opacity: cursorOpacity,
@@ -166,7 +166,7 @@ export function CustomCursor() {
         }}
       />
 
-      {/* Center Precision Electric-Teal Dot */}
+      {/* Center Precision Primary Teal Dot */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -179,10 +179,10 @@ export function CustomCursor() {
           marginTop: `-${dotOffset}px`,
           marginLeft: `-${dotOffset}px`,
           borderRadius: '50%',
-          backgroundColor: '#26D9C4',
+          backgroundColor: '#0D9488',
           boxShadow: isHovering
-            ? '0 0 8px #26D9C4, 0 0 16px rgba(38, 217, 196, 0.8)'
-            : '0 0 6px #26D9C4, 0 0 12px rgba(38, 217, 196, 0.5)',
+            ? '0 0 6px #0D9488, 0 0 12px rgba(13, 148, 136, 0.7)'
+            : '0 0 4px #0D9488, 0 0 8px rgba(13, 148, 136, 0.4)',
           pointerEvents: 'none',
           zIndex: 99999,
           opacity: cursorOpacity,

@@ -9,7 +9,6 @@ import {
   BarChart2,
   PieChart,
   ShieldCheck,
-  BookOpen,
   Check,
   AlertCircle,
 } from 'lucide-react';
@@ -89,15 +88,6 @@ const DASHBOARD_PAGES: PageSearchItem[] = [
     badge: 'Integrity',
     icon: ShieldCheck,
     keywords: ['data quality', 'quality', 'audit', 'completeness', 'elexon', 'bmrs', 'fuelhh', 'windfor', 'missing', '100%'],
-  },
-  {
-    type: 'page',
-    id: 'methodology',
-    title: 'Methodology & Blueprint',
-    description: 'Formulas for MAE, RMSE, WAPE, Naive Persistence Skill, and decision cutoff rules',
-    badge: 'Documentation',
-    icon: BookOpen,
-    keywords: ['methodology', 'blueprint', 'formulas', 'definitions', 'rules', 'anti-leakage', 'cutoff', 'persistence skill', 'wape'],
   },
 ];
 
@@ -410,10 +400,10 @@ export function SearchBar({
             width: '420px',
             maxHeight: '440px',
             overflowY: 'auto',
-            backgroundColor: '#0E172A',
+            backgroundColor: '#FFFFFF',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-md)',
-            boxShadow: '0 16px 36px rgba(0, 0, 0, 0.7), 0 0 16px rgba(38, 217, 196, 0.1)',
+            boxShadow: '0 12px 32px rgba(23, 43, 77, 0.12), 0 2px 6px rgba(23, 43, 77, 0.08)',
             zIndex: 100,
             padding: '8px 0',
           }}
@@ -610,9 +600,9 @@ export function SearchBar({
                           gap: '12px',
                           padding: '8px 16px',
                           cursor: 'pointer',
-                          backgroundColor: isSelected ? 'rgba(183, 243, 107, 0.08)' : 'transparent',
+                          backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.08)' : 'transparent',
                           borderLeft: isSelected
-                            ? '3px solid var(--color-accent-secondary)'
+                            ? '3px solid var(--color-actual)'
                             : '3px solid transparent',
                           transition: 'background-color 100ms ease',
                         }}
@@ -622,11 +612,11 @@ export function SearchBar({
                             width: '28px',
                             height: '28px',
                             borderRadius: 'var(--radius-sm)',
-                            backgroundColor: isCurrent ? 'rgba(183, 243, 107, 0.15)' : 'var(--color-surface-panel)',
+                            backgroundColor: isCurrent ? 'rgba(59, 130, 246, 0.15)' : 'var(--color-surface-panel)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: isCurrent ? 'var(--color-accent-secondary)' : 'var(--color-text-secondary)',
+                            color: isCurrent ? 'var(--color-actual)' : 'var(--color-text-secondary)',
                             flexShrink: 0,
                           }}
                         >
@@ -639,7 +629,7 @@ export function SearchBar({
                               style={{
                                 fontSize: '13px',
                                 fontWeight: isSelected || isCurrent ? 700 : 600,
-                                color: isCurrent ? 'var(--color-accent-secondary)' : 'var(--color-text-primary)',
+                                color: isCurrent ? 'var(--color-actual)' : 'var(--color-text-primary)',
                               }}
                             >
                               {dateItem.title}
@@ -659,8 +649,8 @@ export function SearchBar({
                                   fontSize: '10px',
                                   padding: '1px 6px',
                                   borderRadius: 'var(--radius-full)',
-                                  backgroundColor: 'rgba(183, 243, 107, 0.15)',
-                                  color: 'var(--color-accent-secondary)',
+                                  backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                                  color: 'var(--color-actual)',
                                   fontWeight: 600,
                                 }}
                               >

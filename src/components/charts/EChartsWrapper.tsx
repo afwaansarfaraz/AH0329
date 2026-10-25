@@ -43,7 +43,7 @@ export function EChartsWrapper({
     if (!containerRef.current) return;
 
     if (!chartInstanceRef.current) {
-      chartInstanceRef.current = echarts.init(containerRef.current, 'dark', {
+      chartInstanceRef.current = echarts.init(containerRef.current, undefined, {
         renderer: 'canvas',
       });
     }
@@ -85,9 +85,9 @@ export function EChartsWrapper({
     if (loading) {
       chartInstanceRef.current.showLoading({
         text: 'Loading chart...',
-        color: '#26D9C4',
-        textColor: '#9CAEC3',
-        maskColor: 'rgba(16, 28, 50, 0.6)',
+        color: '#0D9488',
+        textColor: '#64748B',
+        maskColor: 'rgba(234, 245, 252, 0.65)',
       });
     } else {
       chartInstanceRef.current.hideLoading();

@@ -53,7 +53,7 @@ export function Header({
     <header
       style={{
         height: '64px',
-        backgroundColor: 'var(--color-surface-deep)',
+        backgroundColor: 'var(--color-surface-elevated)',
         borderBottom: '1px solid var(--color-border)',
         padding: '0 24px',
         display: 'flex',
@@ -81,7 +81,7 @@ export function Header({
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: 'var(--color-surface-elevated)',
+            backgroundColor: 'var(--color-surface-panel)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-sm)',
             padding: '6px 10px',
@@ -110,7 +110,7 @@ export function Header({
                 year: 'numeric',
               });
               return (
-                <option key={d} value={d} style={{ background: '#0B1425', color: '#F1F5FA' }}>
+                <option key={d} value={d} style={{ background: '#FFFFFF', color: '#172B4D' }}>
                   {label}
                 </option>
               );
@@ -124,7 +124,7 @@ export function Header({
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
-            backgroundColor: 'var(--color-surface-elevated)',
+            backgroundColor: 'var(--color-surface-panel)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-sm)',
             padding: '6px 10px',
@@ -144,16 +144,16 @@ export function Header({
               outline: 'none',
             }}
           >
-            <option value="09:20" style={{ background: '#0B1425', color: '#F1F5FA' }}>
+            <option value="09:20" style={{ background: '#FFFFFF', color: '#172B4D' }}>
               D-1 09:20 (Prototype)
             </option>
-            <option value="06:00" style={{ background: '#0B1425', color: '#F1F5FA' }}>
+            <option value="06:00" style={{ background: '#FFFFFF', color: '#172B4D' }}>
               D-1 06:00 (Early Run)
             </option>
-            <option value="11:00" style={{ background: '#0B1425', color: '#F1F5FA' }}>
+            <option value="11:00" style={{ background: '#FFFFFF', color: '#172B4D' }}>
               D-1 11:00 (Pre-Auction)
             </option>
-            <option value="12:00" style={{ background: '#0B1425', color: '#F1F5FA' }}>
+            <option value="12:00" style={{ background: '#FFFFFF', color: '#172B4D' }}>
               D-1 12:00 (Midday Run)
             </option>
           </select>

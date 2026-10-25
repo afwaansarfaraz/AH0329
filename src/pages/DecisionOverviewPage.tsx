@@ -111,19 +111,25 @@ export function DecisionOverviewPage({
     <div className="animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
       {/* Hero Welcome Banner */}
       <div
+        className="hero-welcome-banner"
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           padding: '24px 28px',
+          minHeight: '156px',
           borderRadius: 'var(--radius-md)',
-          background: 'linear-gradient(135deg, rgba(23, 38, 64, 0.95) 0%, rgba(16, 28, 50, 0.98) 100%)',
+          backgroundImage: `linear-gradient(90deg, rgba(255, 255, 255, 0.96) 0%, rgba(234, 245, 252, 0.92) 35%, rgba(234, 245, 252, 0.40) 62%, rgba(234, 245, 252, 0.05) 100%), url('/images/wind-turbines-hero.jpg')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'right center',
+          backgroundRepeat: 'no-repeat',
           border: '1px solid var(--color-border)',
+          boxShadow: 'var(--shadow-card)',
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        <div style={{ maxWidth: '680px', zIndex: 2 }}>
+        <div style={{ maxWidth: '520px', zIndex: 2 }}>
           <span style={{ fontSize: '13px', fontWeight: 500, color: 'var(--color-text-secondary)' }}>
             Good morning
           </span>
@@ -134,11 +140,12 @@ export function DecisionOverviewPage({
               letterSpacing: '-0.03em',
               margin: '4px 0 8px 0',
               lineHeight: 1.15,
+              color: 'var(--color-text-primary)',
             }}
           >
             Wind insights for <span style={{ color: 'var(--color-accent-primary)' }}>better decisions.</span>
           </h2>
-          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5 }}>
+          <p style={{ fontSize: '13px', color: 'var(--color-text-secondary)', lineHeight: 1.5, maxWidth: '440px' }}>
             Analyse day-ahead wind forecasts, compare vintages, and understand forecast performance for smarter procurement.
           </p>
         </div>
@@ -146,13 +153,17 @@ export function DecisionOverviewPage({
         {/* UK Wind Context Pill */}
         <div
           style={{
+            alignSelf: 'flex-start',
             display: 'flex',
             alignItems: 'center',
             gap: '12px',
-            background: 'rgba(11, 20, 37, 0.75)',
+            background: 'rgba(255, 255, 255, 0.92)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-md)',
-            padding: '12px 16px',
+            boxShadow: 'var(--shadow-card)',
+            padding: '10px 16px',
             zIndex: 2,
           }}
         >
@@ -315,7 +326,7 @@ export function DecisionOverviewPage({
                   lineHeight: 1.45,
                   padding: '10px 12px',
                   borderRadius: 'var(--radius-sm)',
-                  backgroundColor: 'var(--color-surface-deep)',
+                  backgroundColor: 'var(--color-surface-panel)',
                   border: '1px solid var(--color-border-subtle)',
                 }}
               >

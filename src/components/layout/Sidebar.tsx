@@ -4,7 +4,6 @@ import {
   BarChart3,
   Activity,
   Database,
-  FileText,
   ChevronLeft,
   ChevronRight,
   Wind,
@@ -15,8 +14,7 @@ export type NavTab =
   | 'vintages'
   | 'accuracy'
   | 'distribution'
-  | 'quality'
-  | 'methodology';
+  | 'quality';
 
 interface SidebarProps {
   currentTab: NavTab;
@@ -37,7 +35,6 @@ export function Sidebar({
     { id: 'accuracy' as NavTab, label: 'Forecast Accuracy', icon: BarChart3 },
     { id: 'distribution' as NavTab, label: 'Error Distribution', icon: Activity },
     { id: 'quality' as NavTab, label: 'Data Quality', icon: Database },
-    { id: 'methodology' as NavTab, label: 'Methodology', icon: FileText },
   ];
 
   return (
@@ -97,10 +94,11 @@ export function Sidebar({
               </h1>
               <span
                 style={{
-                  fontSize: '9px',
+                  fontSize: '8px',
                   fontWeight: 600,
-                  letterSpacing: '0.08em',
+                  letterSpacing: '0.02em',
                   color: 'var(--color-text-muted)',
+                  display: 'block',
                 }}
               >
                 WIND PROCUREMENT INTELLIGENCE
@@ -151,7 +149,7 @@ export function Sidebar({
             style={{
               padding: '14px',
               borderRadius: 'var(--radius-md)',
-              background: 'linear-gradient(180deg, #16263D 0%, #101E31 100%)',
+              background: 'var(--color-surface-panel)',
               border: '1px solid var(--color-border)',
               marginBottom: '12px',
             }}

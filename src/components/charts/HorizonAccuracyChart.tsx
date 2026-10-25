@@ -46,11 +46,12 @@ export function HorizonAccuracyChart({
       animationDuration: 300,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(11, 20, 37, 0.95)',
-        borderColor: '#2A3D56',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#DCE8F0',
         borderWidth: 1,
         padding: [10, 12],
-        textStyle: { color: '#F1F5FA', fontSize: 12 },
+        textStyle: { color: '#172B4D', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 4px 12px rgba(23, 43, 77, 0.1); border-radius: 8px;',
         formatter: (params: unknown) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const idx = params[0].dataIndex;
@@ -64,15 +65,15 @@ export function HorizonAccuracyChart({
               : '—';
 
           return `
-            <div style="font-weight: 600; color: #F1F5FA; margin-bottom: 4px;">
+            <div style="font-weight: 700; color: #172B4D; margin-bottom: 4px;">
               Lead-Time Horizon: ${b.bucket}
             </div>
-            <div style="color: #9CAEC3; font-size: 11px; margin-bottom: 6px;">
+            <div style="color: #64748B; font-size: 11px; margin-bottom: 6px;">
               Range: ${b.minLeadHours}h to ${b.maxLeadHours}h (${b.sampleCount.toLocaleString()} observations)
             </div>
             <div style="display: flex; justify-content: space-between; gap: 16px;">
-              <span style="color: #26D9C4; font-weight: 600;">${metric.toUpperCase()}:</span>
-              <span style="font-weight: 700;">${valStr}</span>
+              <span style="color: #0D9488; font-weight: 600;">${metric.toUpperCase()}:</span>
+              <span style="font-weight: 700; color: #172B4D;">${valStr}</span>
             </div>
           `;
         },
@@ -87,19 +88,19 @@ export function HorizonAccuracyChart({
       xAxis: {
         type: 'category',
         data: xLabels,
-        axisLine: { lineStyle: { color: '#2A3D56' } },
-        axisLabel: { color: '#9CAEC3', fontSize: 11 },
+        axisLine: { lineStyle: { color: '#DCE8F0' } },
+        axisLabel: { color: '#64748B', fontSize: 11 },
       },
       yAxis: {
         type: 'value',
         axisLine: { show: false },
         axisLabel: {
-          color: '#9CAEC3',
+          color: '#64748B',
           fontSize: 11,
           formatter: (v: number) => `${v.toLocaleString()}${unitLabel}`,
         },
         splitLine: {
-          lineStyle: { color: '#1E2F44', type: 'dashed' },
+          lineStyle: { color: '#DCE8F0', type: 'dashed' },
         },
       },
       series: [
@@ -108,8 +109,8 @@ export function HorizonAccuracyChart({
           type: 'line',
           smooth: 0.3,
           symbolSize: 7,
-          itemStyle: { color: '#26D9C4' },
-          lineStyle: { width: 2.5, color: '#26D9C4' },
+          itemStyle: { color: '#0D9488' },
+          lineStyle: { width: 2.5, color: '#0D9488' },
           areaStyle: {
             color: {
               type: 'linear',
@@ -118,8 +119,8 @@ export function HorizonAccuracyChart({
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(38, 217, 196, 0.3)' },
-                { offset: 1, color: 'rgba(38, 217, 196, 0.02)' },
+                { offset: 0, color: 'rgba(13, 148, 136, 0.22)' },
+                { offset: 1, color: 'rgba(13, 148, 136, 0.01)' },
               ],
             },
           },
@@ -141,7 +142,7 @@ export function HorizonAccuracyChart({
         <div
           style={{
             display: 'inline-flex',
-            background: 'var(--color-surface-deep)',
+            background: 'var(--color-surface-panel)',
             border: '1px solid var(--color-border)',
             borderRadius: 'var(--radius-sm)',
             padding: '2px',
@@ -156,8 +157,9 @@ export function HorizonAccuracyChart({
                 fontSize: '11px',
                 fontWeight: 600,
                 borderRadius: '4px',
-                background: metric === m ? 'var(--color-surface-panel)' : 'transparent',
-                color: metric === m ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                background: metric === m ? 'var(--color-surface-elevated)' : 'transparent',
+                color: metric === m ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+                boxShadow: metric === m ? 'var(--shadow-card)' : 'none',
                 textTransform: 'uppercase',
               }}
             >

@@ -86,7 +86,7 @@ export function VintageComparisonPage({ selectedDate }: VintageComparisonPagePro
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              background: 'var(--color-surface-elevated)',
+              background: 'var(--color-surface-panel)',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-sm)',
               padding: '6px 12px',
@@ -107,9 +107,9 @@ export function VintageComparisonPage({ selectedDate }: VintageComparisonPagePro
                 outline: 'none',
               }}
             >
-              <option value="all" style={{ background: '#0B1425' }}>All 24 Hours</option>
+              <option value="all" style={{ background: '#FFFFFF', color: '#172B4D' }}>All 24 Hours</option>
               {deliveryIntervals.map((st) => (
-                <option key={st} value={st} style={{ background: '#0B1425' }}>
+                <option key={st} value={st} style={{ background: '#FFFFFF', color: '#172B4D' }}>
                   {formatTimeOnly(st)} London
                 </option>
               ))}

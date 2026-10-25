@@ -31,7 +31,7 @@ export function VintageCurveChart({
     const xLabels = allStartTimes.map((st) => formatTimeOnly(st));
 
     // Color palette for vintages
-    const vintageColors = ['#26D9C4', '#B7F36B', '#F59E0B', '#A78BFA', '#F472B6', '#38BDF8'];
+    const vintageColors = ['#0D9488', '#F59E0B', '#16A34A', '#8B5CF6', '#EC4899', '#D97706'];
 
     const series: EChartsOption['series'] = Object.entries(byPublishTime)
       .slice(0, 5) // Display up to 5 vintage runs
@@ -59,8 +59,8 @@ export function VintageCurveChart({
         type: 'line',
         smooth: 0.25,
         showSymbol: false,
-        itemStyle: { color: '#38BDF8' },
-        lineStyle: { width: 2.5, color: '#38BDF8', type: 'dashed' },
+        itemStyle: { color: '#3B82F6' },
+        lineStyle: { width: 2.5, color: '#3B82F6', type: 'dashed' },
         data: actualData,
       });
     }
@@ -70,15 +70,16 @@ export function VintageCurveChart({
       animationDuration: 300,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(11, 20, 37, 0.95)',
-        borderColor: '#2A3D56',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#DCE8F0',
         borderWidth: 1,
-        textStyle: { color: '#F1F5FA', fontSize: 12 },
+        textStyle: { color: '#172B4D', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 4px 12px rgba(23, 43, 77, 0.1); border-radius: 8px;',
       },
       legend: {
         type: 'scroll',
         top: 0,
-        textStyle: { color: '#9CAEC3', fontSize: 11 },
+        textStyle: { color: '#64748B', fontSize: 11 },
         icon: 'circle',
       },
       grid: {
@@ -92,18 +93,18 @@ export function VintageCurveChart({
         type: 'category',
         data: xLabels,
         boundaryGap: false,
-        axisLine: { lineStyle: { color: '#2A3D56' } },
-        axisLabel: { color: '#9CAEC3', fontSize: 11 },
+        axisLine: { lineStyle: { color: '#DCE8F0' } },
+        axisLabel: { color: '#64748B', fontSize: 11 },
       },
       yAxis: {
         type: 'value',
         axisLine: { show: false },
         axisLabel: {
-          color: '#9CAEC3',
+          color: '#64748B',
           fontSize: 11,
           formatter: (v: number) => `${v.toLocaleString()} MW`,
         },
-        splitLine: { lineStyle: { color: '#1E2F44', type: 'dashed' } },
+        splitLine: { lineStyle: { color: '#DCE8F0', type: 'dashed' } },
       },
       series,
     };

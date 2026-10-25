@@ -59,11 +59,12 @@ export function ForecastVsActualChart({
       animationDuration: 400,
       tooltip: {
         trigger: 'axis',
-        backgroundColor: 'rgba(11, 20, 37, 0.95)',
-        borderColor: '#2A3D56',
+        backgroundColor: '#FFFFFF',
+        borderColor: '#DCE8F0',
         borderWidth: 1,
         padding: [12, 14],
-        textStyle: { color: '#F1F5FA', fontSize: 12 },
+        textStyle: { color: '#172B4D', fontSize: 12 },
+        extraCssText: 'box-shadow: 0 4px 12px rgba(23, 43, 77, 0.1); border-radius: 8px;',
         formatter: (params: unknown) => {
           if (!Array.isArray(params) || params.length === 0) return '';
           const idx = params[0].dataIndex;
@@ -85,24 +86,24 @@ export function ForecastVsActualChart({
           if (record.signedErrorMW !== null && record.signedErrorMW !== undefined) {
             const errVal = Math.round(record.signedErrorMW);
             const isOver = errVal > 0;
-            const errColor = isOver ? '#F59E0B' : '#38BDF8';
+            const errColor = isOver ? '#F59E0B' : '#3B82F6';
             errorBadge = `<span style="color: ${errColor}; font-weight: 600;">${errVal > 0 ? '+' : ''}${errVal.toLocaleString()} MW</span> (${isOver ? 'Overforecast' : 'Underforecast'})`;
           }
 
           return `
-            <div style="font-weight: 600; margin-bottom: 8px; color: #F1F5FA;">
+            <div style="font-weight: 700; margin-bottom: 8px; color: #172B4D;">
               ${dtStr} London (Hour ${record.hour})
             </div>
             <div style="display: flex; justify-content: space-between; gap: 24px; margin-bottom: 4px;">
-              <span style="color: #26D9C4;">● Forecast (D-1 Cutoff):</span>
-              <span style="font-weight: 600;">${fc}</span>
+              <span style="color: #0D9488; font-weight: 600;">● Forecast (D-1 Cutoff):</span>
+              <span style="font-weight: 600; color: #172B4D;">${fc}</span>
             </div>
             <div style="display: flex; justify-content: space-between; gap: 24px; margin-bottom: 6px;">
-              <span style="color: #38BDF8;">● Realized Actual:</span>
-              <span style="font-weight: 600;">${act}</span>
+              <span style="color: #3B82F6; font-weight: 600;">● Realized Actual:</span>
+              <span style="font-weight: 600; color: #172B4D;">${act}</span>
             </div>
-            <div style="border-top: 1px solid #2A3D56; padding-top: 6px; display: flex; justify-content: space-between; gap: 24px;">
-              <span style="color: #9CAEC3;">Signed Error:</span>
+            <div style="border-top: 1px solid #DCE8F0; padding-top: 6px; display: flex; justify-content: space-between; gap: 24px;">
+              <span style="color: #64748B;">Signed Error:</span>
               <span>${errorBadge}</span>
             </div>
           `;
@@ -112,7 +113,7 @@ export function ForecastVsActualChart({
         data: ['Forecast (D-1 Cutoff)', 'Actual'],
         right: 120,
         top: 0,
-        textStyle: { color: '#9CAEC3', fontSize: 12 },
+        textStyle: { color: '#64748B', fontSize: 12 },
         icon: 'circle',
         itemGap: 18,
       },
@@ -127,9 +128,9 @@ export function ForecastVsActualChart({
         type: 'category',
         data: xLabels,
         boundaryGap: false,
-        axisLine: { lineStyle: { color: '#2A3D56' } },
+        axisLine: { lineStyle: { color: '#DCE8F0' } },
         axisLabel: {
-          color: '#9CAEC3',
+          color: '#64748B',
           fontSize: 11,
           interval: 2,
         },
@@ -139,13 +140,13 @@ export function ForecastVsActualChart({
         type: 'value',
         axisLine: { show: false },
         axisLabel: {
-          color: '#9CAEC3',
+          color: '#64748B',
           fontSize: 11,
           formatter: (value: number) => `${value.toLocaleString()}${unitSuffix}`,
         },
         splitLine: {
           lineStyle: {
-            color: '#1E2F44',
+            color: '#DCE8F0',
             type: 'dashed',
           },
         },
@@ -157,8 +158,8 @@ export function ForecastVsActualChart({
           smooth: 0.25,
           showSymbol: false,
           symbolSize: 6,
-          itemStyle: { color: '#26D9C4' },
-          lineStyle: { width: 2.5, color: '#26D9C4' },
+          itemStyle: { color: '#0D9488' },
+          lineStyle: { width: 2.5, color: '#0D9488' },
           areaStyle: {
             color: {
               type: 'linear',
@@ -167,8 +168,8 @@ export function ForecastVsActualChart({
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(38, 217, 196, 0.28)' },
-                { offset: 1, color: 'rgba(38, 217, 196, 0.01)' },
+                { offset: 0, color: 'rgba(13, 148, 136, 0.22)' },
+                { offset: 1, color: 'rgba(13, 148, 136, 0.01)' },
               ],
             },
           },
@@ -180,8 +181,8 @@ export function ForecastVsActualChart({
           smooth: 0.25,
           showSymbol: false,
           symbolSize: 6,
-          itemStyle: { color: '#38BDF8' },
-          lineStyle: { width: 2, color: '#38BDF8' },
+          itemStyle: { color: '#3B82F6' },
+          lineStyle: { width: 2, color: '#3B82F6' },
           areaStyle: {
             color: {
               type: 'linear',
@@ -190,8 +191,8 @@ export function ForecastVsActualChart({
               x2: 0,
               y2: 1,
               colorStops: [
-                { offset: 0, color: 'rgba(56, 189, 248, 0.22)' },
-                { offset: 1, color: 'rgba(56, 189, 248, 0.01)' },
+                { offset: 0, color: 'rgba(59, 130, 246, 0.18)' },
+                { offset: 1, color: 'rgba(59, 130, 246, 0.01)' },
               ],
             },
           },
@@ -225,7 +226,7 @@ export function ForecastVsActualChart({
           <div
             style={{
               display: 'inline-flex',
-              background: 'var(--color-surface-deep)',
+              background: 'var(--color-surface-panel)',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-sm)',
               padding: '2px',
@@ -238,8 +239,9 @@ export function ForecastVsActualChart({
                 fontSize: '11px',
                 fontWeight: 600,
                 borderRadius: '4px',
-                background: viewUnit === 'mw' ? 'var(--color-surface-panel)' : 'transparent',
-                color: viewUnit === 'mw' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                background: viewUnit === 'mw' ? 'var(--color-surface-elevated)' : 'transparent',
+                color: viewUnit === 'mw' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+                boxShadow: viewUnit === 'mw' ? 'var(--shadow-card)' : 'none',
               }}
             >
               MW
@@ -251,8 +253,9 @@ export function ForecastVsActualChart({
                 fontSize: '11px',
                 fontWeight: 600,
                 borderRadius: '4px',
-                background: viewUnit === 'pct' ? 'var(--color-surface-panel)' : 'transparent',
-                color: viewUnit === 'pct' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                background: viewUnit === 'pct' ? 'var(--color-surface-elevated)' : 'transparent',
+                color: viewUnit === 'pct' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+                boxShadow: viewUnit === 'pct' ? 'var(--shadow-card)' : 'none',
               }}
             >
               % Max
@@ -263,7 +266,7 @@ export function ForecastVsActualChart({
           <div
             style={{
               display: 'inline-flex',
-              background: 'var(--color-surface-deep)',
+              background: 'var(--color-surface-panel)',
               border: '1px solid var(--color-border)',
               borderRadius: 'var(--radius-sm)',
               padding: '2px',
@@ -276,8 +279,9 @@ export function ForecastVsActualChart({
                 fontSize: '11px',
                 fontWeight: 600,
                 borderRadius: '4px',
-                background: viewTimeMode === 'hourly' ? 'var(--color-surface-panel)' : 'transparent',
-                color: viewTimeMode === 'hourly' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                background: viewTimeMode === 'hourly' ? 'var(--color-surface-elevated)' : 'transparent',
+                color: viewTimeMode === 'hourly' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+                boxShadow: viewTimeMode === 'hourly' ? 'var(--shadow-card)' : 'none',
               }}
             >
               Hourly
@@ -289,8 +293,9 @@ export function ForecastVsActualChart({
                 fontSize: '11px',
                 fontWeight: 600,
                 borderRadius: '4px',
-                background: viewTimeMode === 'sp' ? 'var(--color-surface-panel)' : 'transparent',
-                color: viewTimeMode === 'sp' ? 'var(--color-text-primary)' : 'var(--color-text-muted)',
+                background: viewTimeMode === 'sp' ? 'var(--color-surface-elevated)' : 'transparent',
+                color: viewTimeMode === 'sp' ? 'var(--color-accent-primary)' : 'var(--color-text-muted)',
+                boxShadow: viewTimeMode === 'sp' ? 'var(--shadow-card)' : 'none',
               }}
             >
               Settlement Period
