@@ -1,0 +1,15 @@
+[project]
+name = "winddesk"
+version = "1.0.0"
+description = "WindDesk - Day-Ahead Wind Procurement Decision Support and Forecast Accuracy Analytics"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.115.0,<0.116.0",
+    "uvicorn[standard]>=0.34.0,<0.35.0",
+    "pydantic>=2.10.0,<2.11.0",
+]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
