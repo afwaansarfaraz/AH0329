@@ -159,4 +159,59 @@ describe('SearchBar Component', () => {
     fireEvent.keyDown(input, { key: 'Escape' });
     expect(screen.queryByText(/Dashboard Views/i)).not.toBeInTheDocument();
   });
+
+  it('does not select item on Enter when dropdown is closed', () => {
+    const onSelectDate = vi.fn();
+    const onSelectTab = vi.fn();
+
+    render(
+      <SearchBar
+        selectedDate="2026-01-28"
+        onSelectDate={onSelectDate}
+        currentTab="overview"
+        onSelectTab={onSelectTab}
+      />
+    );
+
+    const input = screen.getByPlaceholderText(/Search pages or dates/i);
+    // Open and then close with Escape
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: 'quality' } });
+    fireEvent.keyDown(input, { key: 'Escape' });
+
+    // With dropdown closed, pressing Enter should NOT trigger selection
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelectTab).not.toHaveBeenCalled();
+  });
+
+  it('limits dates in flattenedItems to the first 8 while displaying full matching count and hint', () => {
+    const onSelectDate = vi.fn();
+    const onSelectTab = vi.fn();
+
+    render(
+      <SearchBar
+        selectedDate="2026-01-28"
+        onSelectDate={onSelectDate}
+        currentTab="overview"
+        onSelectTab={onSelectTab}
+      />
+    );
+
+    const input = screen.getByPlaceholderText(/Search pages or dates/i);
+    fireEvent.focus(input);
+    fireEvent.change(input, { target: { value: '2026-01' } }); // Matches all 30 Jan dates
+
+    // Header should reflect full collection count (30)
+    expect(screen.getByText(/January 2026 Delivery Dates \(30\)/i)).toBeInTheDocument();
+    // Hint should indicate + 22 more
+    expect(screen.getByText(/\+ 22 more historical January dates/i)).toBeInTheDocument();
+
+    // Verify navigating ArrowDown cycles through only the 8 capped dates (since pages is 0 for '2026-01')
+    for (let i = 0; i < 7; i++) {
+      fireEvent.keyDown(input, { key: 'ArrowDown' });
+    }
+    // 8th date is selected (index 7: 2026-01-09)
+    fireEvent.keyDown(input, { key: 'Enter' });
+    expect(onSelectDate).toHaveBeenCalledWith('2026-01-09');
+  });
 });

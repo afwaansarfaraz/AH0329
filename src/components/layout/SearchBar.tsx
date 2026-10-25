@@ -257,7 +257,7 @@ export function SearchBar({
     return {
       matchingPages: pages,
       matchingDates: dates,
-      flattenedItems: [...pages, ...dates] as SearchItem[],
+      flattenedItems: [...pages, ...dates.slice(0, 8)] as SearchItem[],
     };
   }, [query, selectedDate]);
 
@@ -302,7 +302,7 @@ export function SearchBar({
       setSelectedIndex((prev) => (flattenedItems.length > 0 ? (prev - 1 + flattenedItems.length) % flattenedItems.length : 0));
     } else if (e.key === 'Enter') {
       e.preventDefault();
-      if (flattenedItems.length > 0 && flattenedItems[selectedIndex]) {
+      if (isOpen && flattenedItems.length > 0 && flattenedItems[selectedIndex]) {
         handleSelect(flattenedItems[selectedIndex]);
       }
     } else if (e.key === 'Escape') {
