@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useState, useEffect } from 'react';
 import { Sidebar, NavTab } from './Sidebar';
 import { Header } from './Header';
 
@@ -21,7 +21,22 @@ export function Layout({
   onSelectCutoff,
   children,
 }: LayoutProps) {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.innerWidth < 850;
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 850) {
+        setIsSidebarCollapsed(true);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div style={{ display: 'flex', width: '100%', minHeight: '100vh', backgroundColor: 'var(--color-canvas)' }}>
@@ -45,9 +60,9 @@ export function Layout({
         />
 
         <main
+          className="main-viewport-content"
           style={{
             flex: 1,
-            padding: '24px 28px',
             overflowY: 'auto',
             maxWidth: '1680px',
             width: '100%',

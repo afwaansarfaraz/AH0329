@@ -234,3 +234,15 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   }
 }
 
+/* Responsive Viewport Layout */
+.main-viewport-content {
+  padding: 24px 28px;
+}
+
+@media (max-width: 768px) {
+  .main-viewport-content {
+    padding: 16px 12px;
+  }
+}
+
+

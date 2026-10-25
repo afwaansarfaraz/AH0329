@@ -6,7 +6,7 @@ import json
 import csv
 import argparse
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timezone
 
 # Allow running as standalone script or module
 if __name__ == "__main__" and __package__ is None:
@@ -40,7 +40,7 @@ def run_ingestion(
     
     report: dict = {
         "status": "FAILED",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
         "inputs": {},
         "records": {},
         "diagnostics": {}

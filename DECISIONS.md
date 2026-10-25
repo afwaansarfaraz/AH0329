@@ -15,7 +15,7 @@ WindDesk is a decision-support platform for day-ahead wind power procurement. Th
 ## 2. Verified Data Semantics & Source Inspection
 
 ### A. WINDFOR (Wind Generation Forecast)
-* **Inspected Datasets:** [`DATA/windfor_2026_01_all.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/windfor_2026_01_all.json), [`DATA/response_1792855931170.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/response_1792855931170.json), [`DATA/response_1792855092960.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/response_1792855092960.json).
+* **Inspected Datasets:** [`DATA/windfor_2026_01_all.json`](DATA/windfor_2026_01_all.json) (exploratory temporary stream dumps were audited and removed).
 * **Schema:** `['dataset', 'generation', 'publishTime', 'startTime']`.
 * **Publication Cadence:** 8 scheduled publication runs per day at UTC times:
   * `02:30:00`, `04:30:00`, `07:30:00`, `09:30:00`, `11:30:00` (one run at `12:25:00` on Jan 26 due to operator delay), `15:30:00`, `18:30:00`, `22:30:00`.
@@ -29,7 +29,7 @@ WindDesk is a decision-support platform for day-ahead wind power procurement. Th
   * Maximum forward lookahead is $+66.5\,\text{h}$.
 
 ### B. FUELHH (Generation Outturn by Fuel Type)
-* **Inspected Datasets:** [`DATA/fuelhh_2026_01_all_periods.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/fuelhh_2026_01_all_periods.json), [`DATA/fuelhh_2026_02_01.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/fuelhh_2026_02_01.json), [`DATA/fuelhh_2025_12_31.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/fuelhh_2025_12_31.json).
+* **Inspected Datasets:** [`DATA/fuelhh_2026_01_all_periods.json`](DATA/fuelhh_2026_01_all_periods.json), [`DATA/fuelhh_2026_02_01.json`](DATA/fuelhh_2026_02_01.json), [`DATA/fuelhh_2025_12_31.json`](DATA/fuelhh_2025_12_31.json).
 * **Schema:** `['dataset', 'fuelType', 'generation', 'publishTime', 'settlementDate', 'settlementPeriod', 'startTime']`.
 * **Fuel Type Filtering:** Strictly filter `fuelType == "WIND"`. All other 19 fuel types (`CCGT`, `NUCLEAR`, etc.) are discarded in processed wind artifacts.
 * **Settlement Period Mapping:**
@@ -73,7 +73,7 @@ Using the decision-cutoff evaluation sample (Jan 2 to Jan 31, $N = 720$ paired d
 1. **Decision Window:** January 1 through January 31, 2026.
 2. **Decision on January 31:** Under D-1 09:20 cutoff, the decision on Jan 31 procures for delivery on **February 1, 2026** (Periods 1–48).
 3. **Forecast Availability:** Jan 31 publication runs cover all 24 delivery hours of February 1.
-4. **Actuals Availability:** Added [`fuelhh_2026_02_01.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/fuelhh_2026_02_01.json) (960 records, 48 WIND records) and [`fuelhh_2025_12_31.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/DATA/fuelhh_2025_12_31.json) (960 records, 48 WIND records) without altering original source files.
+4. **Actuals Availability:** Added [`fuelhh_2026_02_01.json`](DATA/fuelhh_2026_02_01.json) (960 records, 48 WIND records) and [`fuelhh_2025_12_31.json`](DATA/fuelhh_2025_12_31.json) (960 records, 48 WIND records) without altering original source files.
 5. **Decision:** The evaluation window spans **31 delivery days** (January 2 through February 1, 2026), producing exactly **744 paired evaluation hours** ($31 \times 24 = 744$).
 
 ---
@@ -99,7 +99,7 @@ Using the decision-cutoff evaluation sample (Jan 2 to Jan 31, $N = 720$ paired d
 * **Entrypoint:** `api/index.py` delegating to `backend/main.py:app` (FastAPI).
 * **Bundling Configuration (`vercel.json`):** Explicit `functions.api/index.py.includeFiles: "backend/data/artifacts/**"`.
 * **Local TestClient Execution:** All 7 endpoints verified functional, reading the artifact with zero path disclosure.
-* **Cloud Status:** Blocked on interactive credential requirement (requires `VERCEL_TOKEN` or `vercel login`). The backend architecture is fully verified and ready to deploy once credentials are provided in Phase 3.
+* **Cloud Status:** Deployment is configured and ready for manual execution once the user deploys with their credentials (`VERCEL_TOKEN`).
 
 ---
 
@@ -109,10 +109,10 @@ Using the decision-cutoff evaluation sample (Jan 2 to Jan 31, $N = 720$ paired d
 With February 1 actuals included, the full 31-day January decision window was evaluated at D-1 09:20 Europe/London:
 * **Valid Paired Sample Count ($N$):** **744 hours** (100% coverage, 0 missing hours).
 * **MAE:** **2,038.91 MW**
-* **RMSE:** **2,525.02 MW**
-* **Bias:** **+1,729.07 MW** (systematic overforecasting tendency).
-* **WAPE:** **17.65%**
-* **Naive Persistence MAE:** **4,228.69 MW**
+* **RMSE:** **2,504.76 MW**
+* **Bias:** **+1,747.89 MW** (systematic overforecasting tendency).
+* **WAPE:** **18.07%**
+* **Naive Persistence MAE:** **4,229.67 MW**
 * **Persistence Skill:** **+0.518** (51.8% improvement over naive persistence).
 
 ### B. Empirical Signed-Error Distribution (forecast - actual)
@@ -120,8 +120,8 @@ With February 1 actuals included, the full 31-day January decision window was ev
 * **P5 (5th percentile):** **-1,151.42 MW** (underforecast extreme)
 * **P50 (Median):** **+1,592.00 MW** (median overforecast)
 * **P95 (95th percentile):** **+5,283.35 MW** (overforecast extreme)
-* **Minimum Error:** **-3,467.50 MW**
-* **Maximum Error:** **+7,472.00 MW**
+* **Minimum Error:** **-3,550.00 MW**
+* **Maximum Error:** **+6,870.00 MW**
 
 ### C. Horizon Error Analysis (Retained Vintages <= 72h Lead)
 | Bucket | Min Lead (h) | Max Lead (h) | Sample ($N$) | MAE (MW) | RMSE (MW) | Bias (MW) | WAPE (%) |

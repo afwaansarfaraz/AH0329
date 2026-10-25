@@ -7,7 +7,7 @@
 [![Vite](https://img.shields.io/badge/Vite-6.1-646CFF.svg?logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Apache ECharts](https://img.shields.io/badge/ECharts-5.6-AA344D.svg?logo=apacheecharts&logoColor=white)](https://echarts.apache.org/)
 [![Backend Tests](https://img.shields.io/badge/Backend%20Tests-52%20Passed-brightgreen.svg?logo=pytest&logoColor=white)](#m-testing-and-verification)
-[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-12%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
+[![Frontend Tests](https://img.shields.io/badge/Frontend%20Tests-21%20Passed-brightgreen.svg?logo=vitest&logoColor=white)](#m-testing-and-verification)
 [![Docker](https://img.shields.io/badge/Docker-Verified-2496ED.svg?logo=docker&logoColor=white)](#i-installation-and-local-setup)
 [![License](https://img.shields.io/badge/License-Unlicensed-lightgrey.svg)](#r-contribution-licensing-and-acknowledgements)
 
@@ -66,7 +66,7 @@ WindDesk is a **complete, verified full-stack analytics platform**:
 * **Robust Domain & API Services:** 7 production REST API endpoints served via FastAPI with comprehensive OpenAPI documentation.
 * **Midnight Energy Intelligence Dashboard:** Premium React 18 + TypeScript + Apache ECharts frontend with 6 modular analytics views, responsive layouts, data integrity guarantees (zero fake sparklines or synthetic data), and smooth motion design.
 * **Multi-Container Docker & Compose Orchestration:** Independent `wind-backend` and `wind-frontend` containers with health checks and Nginx reverse proxy.
-* **Offline Automated Testing:** **52 backend tests** and **12 frontend tests** passing 100% offline.
+* **Offline Automated Testing:** **52 backend tests** and **21 frontend tests** passing 100% offline.
 
 ---
 
@@ -81,7 +81,7 @@ WindDesk is a **complete, verified full-stack analytics platform**:
 * **Empirical Error Distribution ($P_5, P_{50}, P_{95}$):** Calculates historical signed-error percentiles using standard linear interpolation to expose asymmetric procurement shortfall risks.
 * **Data Quality & Coverage Diagnostics:** Discloses source record counts, excluded hindcasts, duplicate detection, and missing interval reporting across the entire evaluation window.
 * **Deterministic Offline Ingestion:** Processes raw Elexon BMRS downloads into a compact 2.63 MB JSON runtime artifact and an auditable 779 KB CSV export with non-zero exit codes on validation failures.
-* **Zero External Test Dependencies:** All 52 automated tests execute in under 2 seconds completely offline using deterministic fixtures and mocked network clients.
+* **Zero External Test Dependencies:** All 52 automated backend tests and 21 frontend tests execute completely offline.
 
 ---
 
@@ -123,8 +123,8 @@ flowchart TD
         EP7["GET /api/quality"]
     end
 
-    subgraph S6["6. User Interface (Phase 3 Planned)"]
-        UI["React + TypeScript + Vite + ECharts Dashboard<br/>(Phase 3 Deliverable - Planned)"]
+    subgraph S6["6. User Interface (React 18 + TypeScript + Vite)"]
+        UI["React + TypeScript + Vite + ECharts Dashboard<br/>6 Analytics Views | Interactive Controls | Custom Cursor"]
     end
 
     S1 --> S2
@@ -134,7 +134,7 @@ flowchart TD
     D --> S5
     M --> S5
     H --> S5
-    S5 -.->|Planned Integration| S6
+    S5 -->|REST API / JSON| S6
 ```
 
 ### Stage-by-Stage Explanation
@@ -163,7 +163,7 @@ flowchart TD
 | **Vite** | `6.1+` | Root build system | Ultra-fast HMR development server and optimized rollup production bundler | Build Tooling | **Verified** |
 | **Apache ECharts** | `5.6+` | `src/components/charts/` | High-performance canvas-rendered interactive time-series, horizons, and distributions | Data Visualizations | **Verified** |
 | **Lucide React** | `0.475+` | `src/components/` | Consistent, lightweight engineering iconography | UI Icons | **Verified** |
-| **Vitest & RTL** | `3.0+` | `src/test/` | Modern unit and component testing for React components and utilities | Frontend Testing | **Verified (8/8)** |
+| **Vitest & RTL** | `3.0+` | `src/test/` | Modern unit and component testing for React components and utilities | Frontend Testing | **Verified (21/21)** |
 | **Docker & Compose** | `29+` / `v5.5+` | Root orchestration | Multi-container setup (`wind-backend`, `wind-frontend` on Nginx) | Containerization | **Verified** |
 | **Nginx** | Alpine | `Dockerfile.frontend` | High-performance reverse proxy for API requests and SPA static asset delivery | Web Server | **Verified** |
 | **Vercel CLI** | `65.2+` | Deployment Configuration | Serverless deployment platform for Python backend + static React frontend | Cloud Packaging | **Configured** |
@@ -189,7 +189,8 @@ WIND/
 ├── .gitignore                          # Standard git exclusions (caches, environments, raw downloads)
 ├── .vercelignore                       # Excludes test caches, raw data, and node_modules from Vercel
 ├── vercel.json                         # Vercel serverless function routing and static build output
-├── requirements.txt                    # Root Python dependencies
+├── requirements.txt                    # Production Python dependencies
+├── requirements-dev.txt                # Development and test Python dependencies
 ├── DATA/                               # Raw Elexon BMRS downloads (preserved locally for offline ingestion)
 ├── api/
 │   └── index.py                        # Vercel entrypoint delegating to backend.main:app
@@ -204,9 +205,9 @@ WIND/
 │   │   ├── tokens.css                  # Midnight Energy Intelligence design tokens
 │   │   └── index.css                   # Global styles, micro-animations, skeleton loader
 │   ├── components/
-│   │   ├── common/                     # Card, KpiCard, ErrorBoundary, Badge
-│   │   ├── layout/                     # Collapsible Sidebar, Header with Date/Cutoff picker
-│   │   └── charts/                     # EChartsWrapper, ForecastVsActual, Horizon, Distribution, QualityRing
+│   │   ├── common/                     # Card, KpiCard, CustomCursor, ErrorBoundary, Badge
+│   │   ├── layout/                     # Collapsible Sidebar, Header, SearchBar
+│   │   └── charts/                     # EChartsWrapper (optimized), ForecastVsActual, Horizon, Distribution, QualityRing
 │   ├── pages/                          # 6 Modular Analytics Views
 │   │   ├── DecisionOverviewPage.tsx    # Flagship dashboard matching Midnight Energy reference
 │   │   ├── VintageComparisonPage.tsx   # Successive forecast revision curves & table
@@ -216,11 +217,13 @@ WIND/
 │   │   └── MethodologyPage.tsx         # Prototype D-1 09:20 cutoff, math & market rules
 │   └── test/                           # Vitest Unit & Component Tests
 │       ├── setup.ts                    # Polyfills (ResizeObserver) for jsdom
-│       ├── client.test.ts              # Unit tests for formatting utilities
-│       └── components.test.tsx         # RTL tests for Card, KpiCard, DataQualityRing
+│       ├── client.test.ts              # Unit tests for formatting utilities (8 tests)
+│       ├── components.test.tsx         # RTL tests for Card, KpiCard, DataQualityRing (4 tests)
+│       └── search.test.tsx             # RTL tests for SearchBar & date navigation (9 tests)
 └── backend/
     ├── main.py                         # FastAPI app factory, CORS configuration, and route inclusion
-    ├── requirements.txt                # Backend Python dependencies
+    ├── requirements.txt                # Pinned production Python dependencies
+    ├── requirements-dev.txt            # Development/test Python dependencies
     ├── data/
     │   ├── ingest.py                   # Deterministic ingestion pipeline CLI
     │   └── artifacts/
@@ -411,7 +414,7 @@ npm install
 
 # 4. (Optional) Run test suites
 python -m pytest backend/tests -v   # 52 backend tests
-npm test                            # 8 frontend tests
+npm test                            # 21 frontend tests
 
 # 5. Start Backend API Server (Terminal 1)
 # Note: WindDesk standardizes on port 8008. Windows Hyper-V/NAT dynamic exclusions
@@ -429,7 +432,7 @@ npm run dev
 ```bash
 # Terminal 1 - Backend
 python3 -m venv venv && source venv/bin/activate
-pip install -r requirements.txt
+pip install -r requirements-dev.txt
 python -m uvicorn backend.main:app --reload --port 8008
 
 # Terminal 2 - Frontend
@@ -446,7 +449,7 @@ npm run dev
 
 ## J. Data Ingestion Guide
 
-The deterministic ingestion script is located at [`backend/data/ingest.py`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/backend/data/ingest.py).
+The deterministic ingestion script is located at [`backend/data/ingest.py`](backend/data/ingest.py).
 
 ### How to Run Ingestion
 ```powershell
@@ -600,10 +603,10 @@ Headline historical forecast accuracy metrics evaluated on the decision-cutoff s
     "cutoffPolicy": "D-1 09:20:00 Europe/London (decision-cutoff sample only)",
     "sampleCount": 744,
     "mae": 2038.91,
-    "rmse": 2525.02,
-    "bias": 1729.07,
-    "wape": 17.65,
-    "naivePersistenceMae": 4228.69,
+    "rmse": 2504.76,
+    "bias": 1747.89,
+    "wape": 18.07,
+    "naivePersistenceMae": 4229.67,
     "persistenceSkill": 0.518,
     "coverage": {
       "evaluatedDeliveryDays": 31,
@@ -664,9 +667,9 @@ Historical empirical signed-error percentiles on the decision-cutoff evaluation 
     "p5": -1151.42,
     "p50": 1592.0,
     "p95": 5283.35,
-    "min": -3467.5,
-    "max": 7472.0,
-    "mean": 1729.07,
+    "min": -3550.0,
+    "max": 6870.0,
+    "mean": 1747.89,
     "evaluationWindow": {
       "startDate": "2026-01-02",
       "endDate": "2026-02-01"
@@ -686,7 +689,7 @@ Exposes source coverage, resolution alignment rules, and operational disclosures
 
 ## L. Configuration Reference
 
-All settings are centralized in [`backend/domain/config.py`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/backend/domain/config.py):
+All settings are centralized in [`backend/domain/config.py`](backend/domain/config.py):
 
 | Setting Constant | Default Value | Meaning | Operational Impact |
 | :--- | :---: | :--- | :--- |
@@ -717,7 +720,7 @@ python -m pytest backend/tests -v
 ```text
 ============================= test session starts =============================
 platform win32 -- Python 3.11.9, pytest-9.0.3, pluggy-1.6.0
-rootdir: C:\Users\afwaa\OneDrive\Desktop\WIND
+rootdir: ./WIND
 collected 52 items
 
 backend/tests/test_actuals.py::test_aggregate_half_hourly_to_hourly_complete PASSED
@@ -782,14 +785,15 @@ npm test
 ```
 
 ```text
- RUN  v3.2.7 C:/Users/afwaa/OneDrive/Desktop/WIND
+ RUN  v3.2.7 ./WIND
 
  ✓ src/test/client.test.ts (8 tests)
  ✓ src/test/components.test.tsx (4 tests)
+ ✓ src/test/search.test.tsx (9 tests)
 
- Test Files  2 passed (2)
-      Tests  12 passed (12)
-   Duration  4.26s
+ Test Files  3 passed (3)
+      Tests  21 passed (21)
+   Duration  4.91s
 ```
 
 
@@ -803,17 +807,17 @@ The following figures represent the verified baseline computed from the finalize
 | :--- | :---: | :--- |
 | **Paired Sample Count ($N$)** | **744 hours** | 31 full delivery days $\times$ 24 hours. Complete coverage with 0 missing hours. |
 | **Mean Absolute Error (MAE)** | **2,038.91 MW** | On average, day-ahead forecasts missed actual wind generation by ~2,039 MW. |
-| **Root Mean Squared Error (RMSE)**| **2,525.02 MW** | Penalizes severe forecast spikes; shows modest volatility around typical error bounds. |
-| **Mean Error / Bias** | **+1,729.07 MW** | **Systematic Overforecasting:** Forecasts consistently exceeded actual generation. |
-| **Weighted Absolute Error (WAPE)**| **17.65%** | Aggregate error represented 17.65% of total wind generation across the month. |
-| **Naive Persistence Baseline MAE**| **4,228.69 MW** | Average error incurred by holding cutoff generation constant across Day $D$. |
+| **Root Mean Squared Error (RMSE)**| **2,504.76 MW** | Penalizes severe forecast spikes; shows modest volatility around typical error bounds. |
+| **Mean Error / Bias** | **+1,747.89 MW** | **Systematic Overforecasting:** Forecasts consistently exceeded actual generation. |
+| **Weighted Absolute Error (WAPE)**| **18.07%** | Aggregate error represented 18.07% of total wind generation across the month. |
+| **Naive Persistence Baseline MAE**| **4,229.67 MW** | Average error incurred by holding cutoff generation constant across Day $D$. |
 | **Forecast Skill Score** | **+0.518 (51.8%)**| Model MAE improves upon the naive persistence baseline by 51.8%. |
 | **5th Percentile ($P_5$)** | **-1,151.42 MW** | Extreme underforecast: In 5% of hours, wind exceeded forecast by $\ge 1,151\,\text{MW}$. |
 | **50th Percentile ($P_{50}$)** | **+1,592.00 MW** | Median overforecast: Half of all hours experienced overforecasting of $\ge 1,592\,\text{MW}$. |
 | **95th Percentile ($P_{95}$)** | **+5,283.35 MW** | Extreme overforecast: In 5% of hours, generation fell short by $\ge 5,283\,\text{MW}$. |
 
 ### Practical Market Takeaway
-The substantial positive bias (**+1,729 MW**) indicates that if a procurement desk had contracted 100% of the Day-Ahead forecast volume, it would have been systematically short of physical energy in the balancing mechanism, incurring significant cashout imbalance costs.
+The substantial positive bias (**+1,748 MW**) indicates that if a procurement desk had contracted 100% of the Day-Ahead forecast volume, it would have been systematically short of physical energy in the balancing mechanism, incurring significant cashout imbalance costs.
 
 ---
 
@@ -832,9 +836,9 @@ The substantial positive bias (**+1,729 MW**) indicates that if a procurement de
 
 * **Local Full-Stack Verification:** **PASSED.** React 18 + TypeScript + Apache ECharts dashboard and FastAPI service verified locally; all 7 API endpoints functional with zero console errors.
 * **Multi-Container Docker Compose:** **PASSED.** Both `wind-backend` and `wind-frontend` (Nginx reverse proxy) built and tested locally with automatic health checks (`docker compose up --build`).
-* **Serverless Entrypoint:** **VERIFIED.** [`api/index.py`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/api/index.py) delegates cleanly to `backend.main:app`.
-* **Packaging Configuration:** **VERIFIED.** [`vercel.json`](file:///c:/Users/afwaa/OneDrive/Desktop/WIND/vercel.json) packages `dist` static assets, configures SPA fallback, and includes `backend/data/artifacts/**` into serverless Python bundles.
-* **Cloud Deployment Status:** **CONFIGURED (Deployment Credentials Required).** Unauthenticated deployment attempts require authentication via `vercel login` or passing an authorized `VERCEL_TOKEN`.
+* **Serverless Entrypoint:** **VERIFIED.** [`api/index.py`](api/index.py) delegates cleanly to `backend.main:app`.
+* **Packaging Configuration:** **VERIFIED.** [`vercel.json`](vercel.json) packages `dist` static assets, configures SPA fallback, and includes `backend/data/artifacts/**` into serverless Python bundles.
+* **Cloud Deployment Status:** **PENDING MANUAL DEPLOYMENT.** Cloud configuration and serverless packaging are fully verified. Deployment to Vercel is pending manual deployment by the developer.
 
 ---
 
@@ -853,7 +857,7 @@ The substantial positive bias (**+1,729 MW**) indicates that if a procurement de
 - [x] Phase 3: Apache ECharts interactive time-series, vintage revisions, and distribution plots.
 - [x] Phase 3: 6 modular analytics views (Overview, Vintages, Accuracy, Distribution, Quality, Methodology).
 - [x] Phase 3: Multi-container Docker & Docker Compose setup with Nginx reverse proxy.
-- [x] Phase 3: Vitest frontend component test suite (8 tests passing).
+- [x] Phase 3: Vitest frontend component test suite (21 tests passing across 3 suites).
 - [x] Phase 3: Full-stack Vercel serverless deployment configuration.
 
 ### Future Roadmap
@@ -875,7 +879,7 @@ No license has been attached to this project yet. All rights are reserved by the
 Underlying market data (WINDFOR wind forecasts and FUELHH generation outturn) is provided by **Elexon BMRS** under the Open Government Licence (OGL) and BSC data governance rules.
 
 ### AI Assistance Disclosure
-In accordance with modern engineering standards, generative AI coding assistants were utilized to pair-program backend and frontend implementations, generate unit test fixtures, and document API contracts. All data figures, formulas, anti-leakage rules, and test executions were independently verified.
+In accordance with SWE challenge guidelines and modern engineering standards, AI tools were utilized during development (specifically Anthropic Claude 3.7 Sonnet and Google Gemini / Antigravity pair-programming agents) for technical brainstorming, boilerplate generation, unit test fixture development, and documentation drafting. All analytical formulas, domain logic, anti-leakage forecast selection rules, and test executions were strictly designed, reviewed, and verified by human engineering judgment.
 
 ---
 

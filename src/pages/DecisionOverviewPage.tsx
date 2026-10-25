@@ -186,50 +186,51 @@ export function DecisionOverviewPage({
         }}
       >
         <KpiCard
-          title="Forecast MAE"
-          value={formatMW(summary?.mae ?? overallAccuracy?.mae, 'Not available')}
+          title="Day's Forecast MAE"
+          value={formatMW(summary?.mae, 'Not available')}
           icon={<TrendingUp size={18} />}
           iconColor="var(--color-accent-primary)"
           iconBg="var(--color-accent-primary-dim)"
-          trendText="Mean Absolute Error"
+          trendText="Selected Day (24h)"
           trendDirection="down"
-          tooltip="Average magnitude of forecast error per hour in MW."
+          tooltip="Average magnitude of forecast error per hour in MW for the selected delivery date."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
-          title="Forecast RMSE"
-          value={formatMW(summary?.rmse ?? overallAccuracy?.rmse, 'Not available')}
+          title="Day's Forecast RMSE"
+          value={formatMW(summary?.rmse, 'Not available')}
           icon={<BarChart2 size={18} />}
           iconColor="var(--color-accent-primary)"
           iconBg="var(--color-accent-primary-dim)"
-          trendText="Root Mean Squared Error"
+          trendText="Selected Day (24h)"
           trendDirection="down"
-          tooltip="Penalises large volatility forecast swings heavily."
+          tooltip="Root Mean Squared Error for the selected delivery date."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
-          title="Forecast Bias"
-          value={formatSignedMW(summary?.bias ?? overallAccuracy?.bias, 'Not available')}
+          title="Day's Forecast Bias"
+          value={formatSignedMW(summary?.bias, 'Not available')}
           icon={<Scale size={18} />}
           iconColor="var(--color-warning)"
           iconBg="var(--color-warning-dim)"
-          badgeText={isOverforecasting ? 'Overforecasting' : 'Underforecasting'}
+          badgeText={summary ? (isOverforecasting ? 'Overforecasting' : 'Underforecasting') : undefined}
           badgeVariant={isOverforecasting ? 'amber' : 'blue'}
-          tooltip="Forecast minus Actual. Positive values mean model over-estimated wind generation."
+          trendText={summary ? undefined : 'No data'}
+          tooltip="Forecast minus Actual for selected delivery date. Positive values mean model over-estimated wind generation."
           isLoading={isLoadingDecision}
         />
 
         <KpiCard
-          title="WAPE"
-          value={formatWape(summary?.wape ?? overallAccuracy?.wape, 'Not available')}
+          title="Day's WAPE"
+          value={formatWape(summary?.wape, 'Not available')}
           icon={<Percent size={18} />}
           iconColor="var(--color-actual)"
           iconBg="var(--color-actual-dim)"
-          trendText="Weighted % Error"
+          trendText="Selected Day (24h)"
           trendDirection="down"
-          tooltip="Total absolute error divided by total actual generation."
+          tooltip="Total absolute error divided by total actual generation for selected date."
           isLoading={isLoadingDecision}
         />
 
@@ -241,7 +242,8 @@ export function DecisionOverviewPage({
           iconBg="var(--color-accent-secondary-dim)"
           badgeText="vs Naive Baseline"
           badgeVariant="lime"
-          tooltip="Relative skill score improvement over flat 1-hour lag persistence baseline."
+          trendText="Month Benchmark (744h)"
+          tooltip="Relative skill score improvement over flat 1-hour lag persistence baseline evaluated over all 744 January hours."
           isLoading={isLoadingAnalytics}
         />
       </div>

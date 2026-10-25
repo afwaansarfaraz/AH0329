@@ -1,8 +1,28 @@
 import { useEffect, useRef } from 'react';
-import * as echarts from 'echarts';
+import * as echarts from 'echarts/core';
+import { LineChart, BarChart } from 'echarts/charts';
+import {
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+} from 'echarts/components';
+import { CanvasRenderer } from 'echarts/renderers';
+import type { EChartsOption } from 'echarts';
+
+// Register only the chart types, components, and renderers used by WindDesk
+echarts.use([
+  LineChart,
+  BarChart,
+  GridComponent,
+  TooltipComponent,
+  LegendComponent,
+  TitleComponent,
+  CanvasRenderer,
+]);
 
 interface EChartsWrapperProps {
-  option: echarts.EChartsOption;
+  option: EChartsOption;
   style?: React.CSSProperties;
   className?: string;
   loading?: boolean;

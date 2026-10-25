@@ -313,7 +313,7 @@ export function SearchBar({
   };
 
   return (
-    <div ref={containerRef} style={{ position: 'relative', width: '340px' }}>
+    <div ref={containerRef} style={{ position: 'relative', width: '100%', maxWidth: '340px', minWidth: '160px' }}>
       {/* Search Bar Input Container */}
       <div
         style={{
