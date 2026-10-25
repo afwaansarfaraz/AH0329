@@ -195,4 +195,27 @@ With February 1 actuals included, the full 31-day January decision window was ev
 ### C. Cross-Platform Build & Dependency Reliability
 * Added `@rollup/rollup-linux-x64-gnu` and `@rollup/rollup-linux-x64-musl` to `optionalDependencies` in `package.json`, resolving native binary installation issues when building in Linux Docker containers and CI/Vercel environments from Windows lockfiles.
 
+---
+
+## 10. Windows WinError 10013 Diagnosis, Port Resolution & Port 8008 Standardization
+
+### A. Root Cause Analysis: Windows `WinError 10013`
+* **Mechanism:** On Windows systems with Hyper-V, WSL2, Docker Desktop, or Windows NAT (WinNAT) active, the Host Network Service reserves dynamic port exclusion ranges (`netsh interface ipv4 show excludedportrange protocol=tcp`).
+* **Observed Exclusions:** The user's machine had administered and dynamic exclusions in ranges `50000-50059`, `50131`, `50203-50302`, `55623-55722`, etc. Attempting to bind any non-elevated user process to these ports triggers `PermissionError: [WinError 10013] An attempt was made to access a socket in a way forbidden by its access permissions` (WSAEACCES).
+* **Port 8000 Conflict:** Port `8000` was concurrently occupied on the host by PID 31664 (`sherlog-api` / Docker), causing `[WinError 10048] Only one usage of each socket address is normally permitted`.
+
+### B. Root Cause Analysis: Frontend `Internal Server Error` & `API Offline`
+* **Vite Dev Proxy Target:** `vite.config.ts` was configured with:
+  ```ts
+  proxy: { '/api': { target: 'http://127.0.0.1:8008', changeOrigin: true } }
+  ```
+* **Failure Chain:** When the backend was started on port `50000` (or failed on excluded ports), nothing was listening on `127.0.0.1:8008`. When the frontend at `http://localhost:5174` made requests to `/api/health`, `/api/decision`, etc., Vite received `ECONNREFUSED` from `127.0.0.1:8008` and returned HTTP 500 `Internal Server Error` for all API calls.
+* **UI Symptoms:** Header displayed `API Offline`, Overview displayed `Internal Server Error`, and all KPI cards, tables, and distribution charts fell back to empty/loading states.
+
+### C. Standardized Solution
+1. **Designated Port 8008:** Port `8008` is verified free, outside all Windows TCP exclusion ranges, binds cleanly without permission errors, and matches both `docker-compose.yml` (`8008:8000`) and `vite.config.ts`.
+2. **Alignment Across Documentation:** Updated `README.md` commands and PowerShell curl examples to specify port `8008` consistently (`python -m uvicorn backend.main:app --reload --port 8008`).
+3. **Verified Health & Endpoints:** All 7 endpoints (`/api/health`, `/api/decision`, `/api/vintages`, `/api/accuracy/summary`, `/api/accuracy/horizon`, `/api/accuracy/distribution`, `/api/quality`) return HTTP 200 with 744 verified paired hourly evaluation intervals and 100% data completeness.
+
+
 

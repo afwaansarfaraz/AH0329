@@ -414,11 +414,14 @@ python -m pytest backend/tests -v   # 52 backend tests
 npm test                            # 8 frontend tests
 
 # 5. Start Backend API Server (Terminal 1)
-uvicorn backend.main:app --reload --port 8000
+# Note: WindDesk standardizes on port 8008. Windows Hyper-V/NAT dynamic exclusions
+# reserve high ports (50000-50059, 50131, etc.) causing WinError 10013, and port 8000
+# often conflicts with existing host services. Port 8008 is permitted and wired to Vite's dev proxy.
+python -m uvicorn backend.main:app --reload --port 8008
 
 # 6. Start Frontend Development Server (Terminal 2)
 npm run dev
-# Dashboard opens on http://localhost:5173
+# Dashboard opens on http://localhost:5173 (or http://localhost:5174 if 5173 is occupied)
 ```
 
 #### General Shell Setup (macOS / Linux)
@@ -427,7 +430,7 @@ npm run dev
 # Terminal 1 - Backend
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-uvicorn backend.main:app --reload --port 8000
+python -m uvicorn backend.main:app --reload --port 8008
 
 # Terminal 2 - Frontend
 npm install
@@ -435,9 +438,9 @@ npm run dev
 ```
 
 ### Verification & Documentation URLs
-* **Frontend Application:** `http://localhost:5173` (dev) or `http://localhost:3008` (Docker).
-* **Interactive Swagger UI:** `http://localhost:8000/docs` (dev) or `http://localhost:8008/docs` (Docker).
-* **Service Health Check:** `http://localhost:8000/api/health`.
+* **Frontend Application:** `http://localhost:5173` / `http://localhost:5174` (dev) or `http://localhost:3008` (Docker).
+* **Interactive Swagger UI:** `http://localhost:8008/docs`.
+* **Service Health Check:** `http://localhost:8008/api/health`.
 
 ---
 
@@ -495,7 +498,7 @@ All routes are mounted under the `/api` prefix.
 Verifies that the service is running and that the processed JSON artifact is loaded into memory with valid record counts.
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s http://localhost:8000/api/health | jq .
+  curl.exe -s http://localhost:8008/api/health | jq .
   ```
 * **Sample Response:**
   ```json
@@ -527,7 +530,7 @@ Returns the 24 hourly delivery intervals for a selected delivery date, matching 
   * `cutoffOverride` *(optional, string)*: Custom cutoff time `HH:MM` or `HH:MM:SS` in Europe/London.
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s "http://localhost:8000/api/decision?deliveryDate=2026-01-15" | jq .
+  curl.exe -s "http://localhost:8008/api/decision?deliveryDate=2026-01-15" | jq .
   ```
 * **Sample Response (Snippet):**
   ```json
@@ -574,7 +577,7 @@ Exposes retained forecast publication vintages for revision analysis.
   * `limit` *(optional, integer)*: Maximum records to return (1–500, default: 100).
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s "http://localhost:8000/api/vintages?deliveryDate=2026-01-15&limit=2" | jq .
+  curl.exe -s "http://localhost:8008/api/vintages?deliveryDate=2026-01-15&limit=2" | jq .
   ```
 
 #### 4. `GET /api/accuracy/summary`
@@ -585,7 +588,7 @@ Headline historical forecast accuracy metrics evaluated on the decision-cutoff s
   * `cutoffTime` *(optional, string)*: Decision cutoff time override.
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s http://localhost:8000/api/accuracy/summary | jq .
+  curl.exe -s http://localhost:8008/api/accuracy/summary | jq .
   ```
 * **Sample Response:**
   ```json
@@ -614,7 +617,7 @@ Headline historical forecast accuracy metrics evaluated on the decision-cutoff s
 Error metrics grouped by lead-time buckets across all retained forward vintages ($0\text{--}72\text{h}$).
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s http://localhost:8000/api/accuracy/horizon | jq .
+  curl.exe -s http://localhost:8008/api/accuracy/horizon | jq .
   ```
 * **Sample Response (Snippet):**
   ```json
@@ -650,7 +653,7 @@ Error metrics grouped by lead-time buckets across all retained forward vintages 
 Historical empirical signed-error percentiles on the decision-cutoff evaluation sample.
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s http://localhost:8000/api/accuracy/distribution | jq .
+  curl.exe -s http://localhost:8008/api/accuracy/distribution | jq .
   ```
 * **Sample Response:**
   ```json
@@ -676,7 +679,7 @@ Historical empirical signed-error percentiles on the decision-cutoff evaluation 
 Exposes source coverage, resolution alignment rules, and operational disclosures.
 * **PowerShell Example:**
   ```powershell
-  curl.exe -s http://localhost:8000/api/quality | jq .
+  curl.exe -s http://localhost:8008/api/quality | jq .
   ```
 
 ---
