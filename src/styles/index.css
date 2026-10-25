@@ -225,3 +225,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   color: var(--color-error);
   border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+/* Custom Cursor Responsive & Accessibility Overrides */
+@media (pointer: coarse), (hover: none) {
+  [aria-hidden="true"][style*="z-index: 99998"],
+  [aria-hidden="true"][style*="z-index: 99999"] {
+    display: none !important;
+  }
+}
+

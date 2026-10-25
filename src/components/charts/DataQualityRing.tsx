@@ -10,7 +10,7 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
   if (isLoading || !quality) {
     return (
       <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-        <div className="skeleton" style={{ width: '90px', height: '90px', borderRadius: '50%' }} />
+        <div className="skeleton" style={{ width: '104px', height: '104px', borderRadius: '50%', flexShrink: 0 }} />
         <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <div className="skeleton" style={{ height: '14px', width: '80%' }} />
           <div className="skeleton" style={{ height: '14px', width: '60%' }} />
@@ -28,10 +28,12 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
     ? Number(((actualHours / totalExpectedHours) * 100).toFixed(1))
     : 100.0;
 
-  const radius = 42;
-  const stroke = 8;
-  const normalizedRadius = radius - stroke * 2;
-  const circumference = normalizedRadius * 2 * Math.PI;
+  // Optimized gauge dimensions to prevent text overflowing
+  const size = 104;
+  const strokeWidth = 6.5;
+  const center = size / 2; // 52
+  const radius = 44;
+  const circumference = 2 * Math.PI * radius; // ~276.46
   const strokeDashoffset = circumference - (completenessPercent / 100) * circumference;
 
   const totalSettlementPeriods = quality.sourceCoverage?.actualRecordsRaw ?? (actualHours * 2);
@@ -43,74 +45,113 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
     <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
         {/* Circular Progress Gauge */}
-        <div style={{ position: 'relative', width: '96px', height: '96px', flexShrink: 0 }}>
-          <svg height="96" width="96">
+        <div
+          style={{
+            position: 'relative',
+            width: `${size}px`,
+            height: `${size}px`,
+            flexShrink: 0,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(38, 217, 196, 0.05) 0%, rgba(16, 28, 50, 0.25) 70%, transparent 100%)',
+          }}
+        >
+          <svg
+            width={size}
+            height={size}
+            viewBox={`0 0 ${size} ${size}`}
+            style={{ display: 'block', transform: 'rotate(-90deg)' }}
+          >
+            {/* Background Track */}
             <circle
-              stroke="#1C304A"
+              stroke="var(--color-surface-panel)"
               fill="transparent"
-              strokeWidth={stroke}
-              r={normalizedRadius}
-              cx="48"
-              cy="48"
+              strokeWidth={strokeWidth}
+              r={radius}
+              cx={center}
+              cy={center}
             />
+            {/* Active Completeness Arc */}
             <circle
-              stroke={isHealthy ? '#26D9C4' : '#F59E0B'}
+              stroke={isHealthy ? 'var(--color-accent-primary)' : 'var(--color-warning)'}
               fill="transparent"
-              strokeWidth={stroke}
+              strokeWidth={strokeWidth}
               strokeDasharray={`${circumference} ${circumference}`}
-              style={{ strokeDashoffset, transition: 'stroke-dashoffset 0.8s ease-in-out' }}
+              style={{
+                strokeDashoffset,
+                transition: 'stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+              }}
               strokeLinecap="round"
-              r={normalizedRadius}
-              cx="48"
-              cy="48"
-              transform="rotate(-90 48 48)"
+              r={radius}
+              cx={center}
+              cy={center}
             />
           </svg>
+
+          {/* Centered Typography Inside Circle */}
           <div
             style={{
               position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
+              inset: 0,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
+              textAlign: 'center',
+              pointerEvents: 'none',
+              padding: '4px',
             }}
           >
-            <span style={{ fontSize: '16px', fontWeight: 700, color: '#F1F5FA', lineHeight: 1 }}>
-              {completenessPercent}%
+            <span
+              style={{
+                fontSize: '18px',
+                fontWeight: 800,
+                color: 'var(--color-text-primary)',
+                letterSpacing: '-0.02em',
+                lineHeight: 1.1,
+                fontVariantNumeric: 'tabular-nums',
+              }}
+            >
+              {completenessPercent % 1 === 0 ? completenessPercent.toFixed(0) : completenessPercent.toFixed(1)}%
             </span>
-            <span style={{ fontSize: '9px', color: '#9CAEC3', marginTop: '2px' }}>
+            <span
+              style={{
+                fontSize: '9.5px',
+                fontWeight: 600,
+                color: 'var(--color-text-secondary)',
+                letterSpacing: '0.04em',
+                textTransform: 'uppercase',
+                marginTop: '3px',
+                whiteSpace: 'nowrap',
+              }}
+            >
               Completeness
             </span>
           </div>
         </div>
 
         {/* Quality Breakdown Metrics */}
-        <div style={{ flex: 1, fontSize: '12px' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Settlement periods recorded</span>
-            <strong style={{ color: 'var(--color-text-primary)' }}>{totalSettlementPeriods.toLocaleString()}</strong>
+        <div style={{ flex: 1, minWidth: 0, fontSize: '12px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', borderBottom: '1px solid var(--color-border-subtle)', gap: '8px' }}>
+            <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Settlement periods recorded</span>
+            <strong style={{ color: 'var(--color-text-primary)', flexShrink: 0 }}>{totalSettlementPeriods.toLocaleString()}</strong>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Retained forecast records</span>
-            <strong style={{ color: 'var(--color-text-primary)' }}>{forecastRecords.toLocaleString()}</strong>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', borderBottom: '1px solid var(--color-border-subtle)', gap: '8px' }}>
+            <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Retained forecast records</span>
+            <strong style={{ color: 'var(--color-text-primary)', flexShrink: 0 }}>{forecastRecords.toLocaleString()}</strong>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Retained actual hours</span>
-            <strong style={{ color: 'var(--color-text-primary)' }}>{actualHours.toLocaleString()}</strong>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', borderBottom: '1px solid var(--color-border-subtle)', gap: '8px' }}>
+            <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Retained actual hours</span>
+            <strong style={{ color: 'var(--color-text-primary)', flexShrink: 0 }}>{actualHours.toLocaleString()}</strong>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: '1px solid var(--color-border-subtle)' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Missing delivery hours</span>
-            <strong style={{ color: missingRecords === 0 ? 'var(--color-accent-primary)' : 'var(--color-warning)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', borderBottom: '1px solid var(--color-border-subtle)', gap: '8px' }}>
+            <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Missing delivery hours</span>
+            <strong style={{ color: missingRecords === 0 ? 'var(--color-accent-primary)' : 'var(--color-warning)', flexShrink: 0 }}>
               {missingRecords}
             </strong>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0' }}>
-            <span style={{ color: 'var(--color-text-secondary)' }}>Evaluated sample count</span>
-            <strong style={{ color: 'var(--color-accent-secondary)' }}>{quality.evaluationSampleCount.toLocaleString()}</strong>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '3.5px 0', gap: '8px' }}>
+            <span style={{ color: 'var(--color-text-secondary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Evaluated sample count</span>
+            <strong style={{ color: 'var(--color-accent-secondary)', flexShrink: 0 }}>{quality.evaluationSampleCount.toLocaleString()}</strong>
           </div>
         </div>
       </div>
@@ -130,7 +171,7 @@ export function DataQualityRing({ quality, isLoading = false }: DataQualityRingP
           fontWeight: 500,
         }}
       >
-        {isHealthy ? <CheckCircle2 size={14} /> : <AlertTriangle size={14} />}
+        {isHealthy ? <CheckCircle2 size={14} style={{ flexShrink: 0 }} /> : <AlertTriangle size={14} style={{ flexShrink: 0 }} />}
         <span>
           {isHealthy
             ? 'Complete paired coverage verified across all 744 evaluation hours.'

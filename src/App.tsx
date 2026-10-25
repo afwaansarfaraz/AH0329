@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Layout } from './components/layout/Layout';
 import { NavTab } from './components/layout/Sidebar';
 import { ErrorBoundary } from './components/common/ErrorBoundary';
+import { CustomCursor } from './components/common/CustomCursor';
 import { DecisionOverviewPage } from './pages/DecisionOverviewPage';
 import { VintageComparisonPage } from './pages/VintageComparisonPage';
 import { ForecastAccuracyPage } from './pages/ForecastAccuracyPage';
@@ -52,6 +53,7 @@ export function App() {
 
   return (
     <ErrorBoundary>
+      <CustomCursor />
       <Layout
         currentTab={currentTab}
         onSelectTab={setCurrentTab}
